@@ -1,5 +1,6 @@
 import { AppShell, Flex } from "@mantine/core";
 import CommentBoxComponent from "./CommentBoxComponent";
+import ReplyBoxComponent from "./ReplyBoxComponent";
 
 export default function HomePage() {
   return (
@@ -13,8 +14,9 @@ export default function HomePage() {
         },
       })}
     >
-      <Flex direction="column" align="center">
+      <Flex direction="column" align="center" gap={'md'}>
         <CommentBoxComponent />
+        <ReplyBoxComponent />
       </Flex>
     </AppShell>
   );

@@ -22,27 +22,26 @@ export default function LikesButton() {
     return (
         <Button.Group orientation="vertical" sx={
             {
+                height: "fit-content",
                 borderRadius: "0.5rem",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
                 margin: "0.5rem",
             }
         }
-            bg={"siteNeutral.2"}
+            
         >
             <Button w={"100%"} color={"siteNeutral.2"} onClick={addLike}>
-                <Text color={"sitePrimary.0"} weight={'bold'}>
+                <Text color={"sitePrimary.2"} weight={'bold'}>
                     +
                 </Text>
             </Button>
 
-            <Text color={"sitePrimary.0"} weight={'bold'}>
+            <Text align="center" color={"sitePrimary.0"} weight={'bold'} w={"100%"} bg={"siteNeutral.2"}>
                 {likes}
             </Text>
             
             <Button w={'100%'} color={"siteNeutral.2"} onClick={subtractLike}>
-                <Text color={"sitePrimary.0"} weight={'bold'}>
+                <Text color={"sitePrimary.2"} weight={'bold'}>
                     -
                 </Text>
             </Button>

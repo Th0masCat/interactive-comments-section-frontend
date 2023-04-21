@@ -15,6 +15,9 @@ export function CustomFonts() {
                         fontStyle: 'normal',
                     },
                 },
+
+                
+
                 {
                     '@font-face': {
                         fontFamily: 'Rubik',

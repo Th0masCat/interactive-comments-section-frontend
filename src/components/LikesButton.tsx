@@ -22,7 +22,7 @@ export default function LikesButton() {
     return (
         <Button.Group orientation="vertical" sx={
             {
-                height: "fit-content",
+                width: "fit-content",
                 borderRadius: "0.5rem",
                 alignItems: "center",
                 margin: "0.5rem",

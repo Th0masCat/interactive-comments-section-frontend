@@ -9,18 +9,13 @@ import { useState } from 'react';
 
 import useUser from '../helpers/useUser'
 
-
-const endpoint = 'https://th0mascat.pythonanywhere.com/'
-
+import { endpoint } from '../helpers/useUser'
 
 export default function CommentBoxComponent(props: any) {
     const user = true;
 
-
     const [comment, setComment] = useState('');
-
     const { mutate } = useUser(endpoint + '/api/toka')
-
     const [edit, setEdit] = useState(false)
 
     const handleEditClick = () => {
@@ -141,7 +136,7 @@ export default function CommentBoxComponent(props: any) {
 
                                         }
                                         leftIcon={<Image src={editIcon} />}>
-                                        Edit
+                                        {edit ? 'Cancel' : 'Edit'}
                                     </Button>
                                 </Button.Group>
                             </Grid.Col>

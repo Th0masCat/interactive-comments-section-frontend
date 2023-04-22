@@ -1,17 +1,17 @@
 import { Card, Flex, Button, Textarea, Avatar } from '@mantine/core'
-import avatar from '../../images/avatars/image-amyrobson.png';
 import axios from 'axios';
 import { useState } from 'react';
 
 import useUser from '../helpers/useUser';
 
-const endpoint = 'https://th0mascat.pythonanywhere.com/'
+import { endpoint } from '../helpers/useUser';
 
-export default function ReplyBoxComponent() {
+export default function ReplyBoxComponent(props:any) {
     
     const [comment, setComment] = useState('');
+    const { mutate, isLoading } = useUser(endpoint+'/api/toka')
 
-    const { mutate } = useUser(endpoint+'/api/toka')
+    
 
     const handleSubmit = (e:any) => {
         e.preventDefault();
@@ -21,8 +21,8 @@ export default function ReplyBoxComponent() {
             likes: 0,
         })
         setComment('')
+        
         mutate()
-
         console.log('You clicked submit.');
     }
 
@@ -36,8 +36,8 @@ export default function ReplyBoxComponent() {
                 gap="sm"
                 justify={'space-between'}>
                 <Avatar
-                    src={avatar}
-                    alt="Amy Robson"
+                    src={props.avatar}
+                    alt="user_avatar"
                     sx={{ borderRadius: '20rem' }} 
                     />
                 <Textarea

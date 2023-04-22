@@ -1,28 +1,51 @@
-import { Card, Flex, Text, Image, Button, Container, Box, Grid } from '@mantine/core'
+import { Card, Flex, Text, Image, Button, Container, Box, Grid, Avatar } from '@mantine/core'
 import LikesButton from './LikesButton'
-import avatar from '../../images/avatars/image-amyrobson.png'
 import replyIcon from '../../images/icon-reply.svg'
 import deleteIcon from '../../images/icon-delete.svg'
 import editIcon from '../../images/icon-edit.svg'
+import Moment from 'react-moment'
+import axios from 'axios';
 
-export default function CommentBoxComponent() {
+export default function CommentBoxComponent(props: any) {
     const user = true;
+
+    const endpoint = 'http://127.0.0.1:8000'
+
+    const handleDelete = () => {
+        axios.delete(endpoint + '/api/toka/', {
+            data: {
+                id: props.id
+            }
+        })
+        console.log('Delete')
+    }
 
     return (
         <Card display={'flex'} w={'50rem'} h={'auto'} radius="lg" p="md">
-            <LikesButton />
-            <Flex direction="column" p="md" gap={'lg'}>
-                <Grid align={"center"} gutter={'sm'}>
-                    <Grid.Col span={1}>
-                        <Image
-                            width={'2rem'}
-                            src={avatar}
-                            alt="Amy Robson" />
+            <LikesButton like={props.like} />
+            <Flex
+                direction="column"
+                p="md"
+                gap={'lg'}
+                w={"100%"}>
+                <Grid
+                    grow
+                    align={"center"}
+                    w={"100%"}>
+                    <Grid.Col
+                        display={'flex'}
+                        span={'auto'}
+                        sx={{ justifyContent: 'center' }}>
+
+                        <Avatar
+                            radius="xl"
+                            src={props.img}
+                            alt="profile_img" />
                     </Grid.Col>
 
                     <Grid.Col span={'content'}>
-                        <Text weight={'bold'} color='siteNeutral.0' >
-                            Amy Robinson
+                        <Text align='left' weight={'bold'} color='siteNeutral.0' >
+                            {props.name}
                             {
                                 user ?
                                     <Text
@@ -45,8 +68,9 @@ export default function CommentBoxComponent() {
 
                     <Grid.Col span={3}>
                         <Text
+                            align='left'
                             color='siteNeutral.1'>
-                            One month ago
+                            <Moment fromNow date={props.time} />
                         </Text>
                     </Grid.Col>
                     {
@@ -57,6 +81,7 @@ export default function CommentBoxComponent() {
                                 sx={{ justifyContent: "flex-end" }}>
                                 <Button.Group>
                                     <Button
+                                        onClick={handleDelete}
                                         styles={(theme) => ({
                                             root: {
                                                 backgroundColor: 'transparent',
@@ -91,8 +116,8 @@ export default function CommentBoxComponent() {
                             :
                             <Grid.Col
                                 display={'flex'}
-                                span={'auto'}
-                                offset={2}
+                                span={2}
+                                offset={4}
                                 sx={{ justifyContent: "flex-end" }}>
                                 <Button
                                     styles={(theme) => ({
@@ -113,10 +138,7 @@ export default function CommentBoxComponent() {
 
                 </Grid>
                 <Text color='siteNeutral.1'>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                    Ad sapiente tempora quae voluptates impedit id maiores suscipit. 
-                    Consequuntur cupiditate voluptate enim! Quasi, veniam voluptas? Temporibus, perspiciatis. 
-                    Tempora adipisci voluptatem ipsam.
+                    {props.content}
                 </Text>
             </Flex>
         </Card>

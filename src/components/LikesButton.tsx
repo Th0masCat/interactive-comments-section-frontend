@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text } from "@mantine/core";
 
-export default function LikesButton() {
+export default function LikesButton(props: any) {
     const [likes, setLikes] = useState(0);
 
+    useEffect(() => {
+        setLikes(props.like)
+    }, [props.like]);
+    
     const subtractLike = () => {
         if (likes > 0) {
             setLikes(likes - 1);

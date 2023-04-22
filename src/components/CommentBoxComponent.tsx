@@ -1,15 +1,43 @@
-import { Card, Flex, Text, Image, Button, Container, Box, Grid, Avatar } from '@mantine/core'
+import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea } from '@mantine/core'
 import LikesButton from './LikesButton'
 import replyIcon from '../../images/icon-reply.svg'
 import deleteIcon from '../../images/icon-delete.svg'
 import editIcon from '../../images/icon-edit.svg'
 import Moment from 'react-moment'
 import axios from 'axios';
+import { useState } from 'react';
+
+import useUser from '../helpers/useUser'
+
+
+const endpoint = 'https://th0mascat.pythonanywhere.com/'
+
 
 export default function CommentBoxComponent(props: any) {
     const user = true;
 
-    const endpoint = 'http://127.0.0.1:8000'
+
+    const [comment, setComment] = useState('');
+
+    const { mutate } = useUser(endpoint + '/api/toka')
+
+    const [edit, setEdit] = useState(false)
+
+    const handleEditClick = () => {
+        setComment(props.content)
+        setEdit(!edit)
+    }
+
+    const handleEdit = () => {
+        axios.put(endpoint + '/api/toka/', {
+            id: props.id,
+            post_content: comment
+        })
+        mutate()
+
+        setEdit(false)
+        console.log('Edit')
+    }
 
     const handleDelete = () => {
         axios.delete(endpoint + '/api/toka/', {
@@ -17,6 +45,7 @@ export default function CommentBoxComponent(props: any) {
                 id: props.id
             }
         })
+        mutate()
         console.log('Delete')
     }
 
@@ -24,6 +53,7 @@ export default function CommentBoxComponent(props: any) {
         <Card display={'flex'} w={'50rem'} h={'auto'} radius="lg" p="md">
             <LikesButton like={props.like} />
             <Flex
+                align={'flex-end'}
                 direction="column"
                 p="md"
                 gap={'lg'}
@@ -97,17 +127,19 @@ export default function CommentBoxComponent(props: any) {
                                         Delete
                                     </Button>
 
-                                    <Button styles={(theme) => ({
-                                        root: {
-                                            backgroundColor: 'transparent',
-                                            color: theme.colors.sitePrimary[0],
-                                            '&:hover': {
+                                    <Button
+                                        onClick={handleEditClick}
+                                        styles={(theme) => ({
+                                            root: {
                                                 backgroundColor: 'transparent',
+                                                color: theme.colors.sitePrimary[0],
+                                                '&:hover': {
+                                                    backgroundColor: 'transparent',
+                                                }
                                             }
-                                        }
-                                    })
+                                        })
 
-                                    }
+                                        }
                                         leftIcon={<Image src={editIcon} />}>
                                         Edit
                                     </Button>
@@ -137,9 +169,45 @@ export default function CommentBoxComponent(props: any) {
                     }
 
                 </Grid>
-                <Text color='siteNeutral.1'>
-                    {props.content}
+                <Text
+                    align='left'
+                    w={"100%"}
+                    color='siteNeutral.1'>
+                    {edit ?
+                        <Textarea
+                            placeholder='Write a reply...'
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            size='sm'
+                            autosize
+                            radius={'md'}
+                            w={'100%'}
+                            minRows={3}>
+                        </Textarea>
+                        : props.content
+                    }
                 </Text>
+                {edit ?
+                    <Button
+                        onClick={handleEdit}
+                        disabled={comment === ''}
+                        size='sm'
+                        styles={(theme) => ({
+                            root: {
+                                backgroundColor: theme.colors.sitePrimary[0],
+                                color: theme.colors.siteNeutral[4],
+                                '&:hover': {
+                                    backgroundColor: theme.colors.siteNeutral[3],
+                                    color: theme.colors.sitePrimary[0],
+                                }
+                            }
+                        })
+
+                        }>
+                        Update
+                    </Button>
+                    : null
+                }
             </Flex>
         </Card>
     );

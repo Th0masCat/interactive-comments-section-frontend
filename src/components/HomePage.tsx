@@ -1,22 +1,14 @@
 import { AppShell, Flex } from "@mantine/core";
 import CommentBoxComponent from "./CommentBoxComponent";
 import ReplyBoxComponent from "./ReplyBoxComponent";
-import axios from 'axios'
-import { useEffect, useState } from "react";
+import useUser from "../helpers/useUser";
 
 import avatar from '../../images/avatars/image-amyrobson.png'
 
 export default function HomePage() {
-  const [image, setImage] = useState();
-  const [comments, setComments] = useState([]);
-  const endpoint = 'http://127.0.0.1:8000'
+  const endpoint = 'https://th0mascat.pythonanywhere.com/'
 
-  useEffect(() => {
-    axios.get(endpoint + '/api/toka/').then(res => {
-      console.log(res.data[0])
-      setComments(res.data)
-    })
-  }, [])
+  const {comments} = useUser(endpoint + '/api/toka')
 
   return (
     <AppShell
@@ -40,7 +32,7 @@ export default function HomePage() {
                     Consequuntur cupiditate voluptate enim! Quasi, veniam voluptas? Temporibus, perspiciatis. 
                     Tempora adipisci voluptatem ipsam.' />
 
-        {comments.map((comment: any) => {
+        {comments?.map((comment: any) => {
           return (
             <CommentBoxComponent
               id = {comment.id}

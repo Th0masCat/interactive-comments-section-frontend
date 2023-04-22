@@ -1,11 +1,17 @@
-import { Card, Flex, Text, Image, Button, Textarea, Avatar } from '@mantine/core'
+import { Card, Flex, Button, Textarea, Avatar } from '@mantine/core'
 import avatar from '../../images/avatars/image-amyrobson.png';
 import axios from 'axios';
 import { useState } from 'react';
 
+import useUser from '../helpers/useUser';
+
+const endpoint = 'https://th0mascat.pythonanywhere.com/'
+
 export default function ReplyBoxComponent() {
-    const endpoint = 'http://127.0.0.1:8000'
+    
     const [comment, setComment] = useState('');
+
+    const { mutate } = useUser(endpoint+'/api/toka')
 
     const handleSubmit = (e:any) => {
         e.preventDefault();
@@ -14,6 +20,9 @@ export default function ReplyBoxComponent() {
             post_content: comment,
             likes: 0,
         })
+        setComment('')
+        mutate()
+
         console.log('You clicked submit.');
     }
 
@@ -42,6 +51,7 @@ export default function ReplyBoxComponent() {
                     minRows={3}>
                 </Textarea>
                 <Button
+                    disabled={comment === ''}
                     onClick={(e) => handleSubmit(e)}
                     size='sm'
                     styles={(theme) => ({

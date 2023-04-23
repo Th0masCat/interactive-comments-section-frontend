@@ -1,17 +1,19 @@
 import { Card, Flex, Button, Textarea, Avatar } from '@mantine/core'
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import useUser from '../helpers/useUser';
-
 import { endpoint } from '../helpers/useUser';
+
+import { userState } from '../atoms/userAtom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 export default function ReplyBoxComponent(props:any) {
     
-    const [comment, setComment] = useState('');
-    const { mutate, isLoading } = useUser(endpoint+'/api/toka')
+    const user = useRecoilValue(userState)
 
-    
+    const [comment, setComment] = useState('');
+    const { mutate } = useUser(endpoint+'/api/toka')    
 
     const handleSubmit = (e:any) => {
         e.preventDefault();
@@ -36,7 +38,7 @@ export default function ReplyBoxComponent(props:any) {
                 gap="sm"
                 justify={'space-between'}>
                 <Avatar
-                    src={props.avatar}
+                    src={endpoint + user}
                     alt="user_avatar"
                     sx={{ borderRadius: '20rem' }} 
                     />

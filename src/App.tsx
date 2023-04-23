@@ -2,10 +2,12 @@ import './App.css'
 import { MantineProvider } from '@mantine/core'
 import HomePage from './components/HomePage'
 import { CustomFonts } from './fonts/CustomFont'
+import { RecoilRoot } from 'recoil'
 
 function App() {
 
   return (
+    <RecoilRoot>
     <MantineProvider withGlobalStyles withNormalizeCSS
       theme={
         {
@@ -20,6 +22,7 @@ function App() {
       <HomePage />
       <CustomFonts />
     </MantineProvider >
+    </RecoilRoot>
   )
 }
 

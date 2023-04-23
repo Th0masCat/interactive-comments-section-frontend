@@ -1,15 +1,16 @@
 import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea } from '@mantine/core'
-import LikesButton from './LikesButton'
+import Moment from 'react-moment'
+import { useState } from 'react';
+import axios from 'axios';
+
 import replyIcon from '../../images/icon-reply.svg'
 import deleteIcon from '../../images/icon-delete.svg'
 import editIcon from '../../images/icon-edit.svg'
-import Moment from 'react-moment'
-import axios from 'axios';
-import { useState } from 'react';
 
-import useUser from '../helpers/useUser'
+import LikesButton from './LikesButton'
 
 import { endpoint } from '../helpers/useUser'
+import useUser from '../helpers/useUser'
 
 export default function CommentBoxComponent(props: any) {
     const user = true;

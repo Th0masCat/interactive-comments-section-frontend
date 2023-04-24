@@ -18,7 +18,7 @@ export default function ReplyBoxComponent(props:any) {
     const handleSubmit = (e:any) => {
         e.preventDefault();
         axios.post(endpoint + '/api/toka/', {
-            username: 'Sahil',
+            username: user.name,
             post_content: comment,
             likes: 0,
         })
@@ -38,7 +38,7 @@ export default function ReplyBoxComponent(props:any) {
                 gap="sm"
                 justify={'space-between'}>
                 <Avatar
-                    src={endpoint + user}
+                    src={endpoint + user.user_image}
                     alt="user_avatar"
                     sx={{ borderRadius: '20rem' }} 
                     />

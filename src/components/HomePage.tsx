@@ -11,24 +11,13 @@ import { endpoint } from "../helpers/useUser";
 import avatar from '../../images/avatars/image-amyrobson.png'
 
 import { userState } from '../atoms/userAtom';
-import { useRecoilState } from 'recoil';
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 export default function HomePage() {
   const { comments, isLoading } = useUser(endpoint + '/api/toka')
 
-  const [player, setPlayer] = useRecoilState(userState)
-
-  useEffect(() => {
-    axios.get(endpoint + '/api/user')
-      .then(res => {
-        console.log(res.data)
-        setPlayer(res.data)
-        console.log(player)
-      })
-  }, [])
+  const user = useRecoilValue(userState)
 
 
   return (
@@ -65,6 +54,7 @@ export default function HomePage() {
             comments?.map((comment: any) => {
               return (
                 <CommentBoxComponent
+                  loggedInUser = {user.isLoggedin}
                   id={comment.id}
                   key={comment.id}
                   img={endpoint + comment.user_details.user_image}
@@ -75,7 +65,7 @@ export default function HomePage() {
               )
             })
         }
-        <ReplyBoxComponent />
+        {user.isLoggedin && <ReplyBoxComponent />}
       </Flex>
     </AppShell>
   );

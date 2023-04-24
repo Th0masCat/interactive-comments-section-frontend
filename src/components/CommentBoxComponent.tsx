@@ -12,8 +12,12 @@ import LikesButton from './LikesButton'
 import { endpoint } from '../helpers/useUser'
 import useUser from '../helpers/useUser'
 
+
+import { userState } from '../atoms/userAtom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
 export default function CommentBoxComponent(props: any) {
-    const user = true;
+    const user = useRecoilValue(userState)
 
     const [comment, setComment] = useState('');
     const { mutate } = useUser(endpoint + '/api/toka')
@@ -73,7 +77,7 @@ export default function CommentBoxComponent(props: any) {
                         <Text align='left' weight={'bold'} color='siteNeutral.0' >
                             {props.name}
                             {
-                                user ?
+                                user.isLoggedin && props.name==user.name ?
                                     <Text
                                         size={'xs'}
                                         ml={"0.5rem"}
@@ -100,7 +104,7 @@ export default function CommentBoxComponent(props: any) {
                         </Text>
                     </Grid.Col>
                     {
-                        user ?
+                        user.isLoggedin && props.name==user.name ?
                             <Grid.Col
                                 display={'flex'}
                                 span={5}

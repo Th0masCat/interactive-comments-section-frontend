@@ -134,7 +134,6 @@ export default function HomePage() {
         <Flex
           direction={"column"}
           w={'50rem'}>
-
           <Text
             size="xl"
             weight={700}
@@ -222,7 +221,7 @@ export default function HomePage() {
                     comments?.map((reply: any) => {
                       if (reply.parent_post === comment.id) {
                         return (
-                          <Flex align={'flex-end'} direction="column" w={'50rem'}>
+                          <Flex align={'flex-end'} gap={'md'} direction="column" w={'50rem'}>
                             <CommentBoxComponent
                               replyDisabled={true}
                               marginLeft={'2rem'}

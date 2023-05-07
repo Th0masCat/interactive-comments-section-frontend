@@ -179,7 +179,7 @@ export default function CommentBoxComponent(props: any) {
                                             }
                                         })
 
-                                        } leftIcon={<Image src={replyIcon} />}>
+                                        } leftIcon={props.replyDisabled?null:<Image src={replyIcon}/>}>
                                         Reply
                                     </Button>
                                 </Grid.Col>

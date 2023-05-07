@@ -1,7 +1,8 @@
 import { Card, Grid, Skeleton } from "@mantine/core"
 
 export default function SkeletonComponent() {
-    return (<Card
+    return (
+    <Card
         display={'flex'}
         w={'50rem'}
         h={'auto'}

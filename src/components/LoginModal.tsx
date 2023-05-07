@@ -1,12 +1,12 @@
 import { useDisclosure, useInputState } from '@mantine/hooks';
-import { Modal, Group, Button, PasswordInput, TextInput, Flex, FileInput } from '@mantine/core';
+import { Modal, Button, PasswordInput, TextInput, Flex, FileInput } from '@mantine/core';
 import { useState } from 'react';
 import { endpoint } from '../helpers/useUser'
 import { userState } from '../atoms/userAtom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import axios from 'axios';
 
-export default function LoginModal(props:any) {
+export default function LoginModal(props: any) {
     const [usernameValue, setUsernameValue] = useInputState('');
     const [emailValue, setEmailValue] = useInputState('');
     const [passwordValue, setPasswordValue] = useInputState('');
@@ -43,8 +43,6 @@ export default function LoginModal(props:any) {
         setRegister(!register)
     }
 
-    // const [uploadProgress, setUploadProgress] = useState(0);
-
     const handleRegister = () => {
         const formData = new FormData();
         formData.append('name', usernameValue);
@@ -56,14 +54,8 @@ export default function LoginModal(props:any) {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
-            // onUploadProgress: (progressEvent: any) => {
-            //     const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            //     setUploadProgress(percentCompleted);
-            //     console.log(uploadProgress)
-            // }
-        };
 
-        // setUploadProgress(0);
+        };
 
         axios.post(endpoint + '/api/user/', formData, config).then((res) => {
             console.log(res.data)
@@ -76,30 +68,40 @@ export default function LoginModal(props:any) {
         setRegister(!register)
     }
 
-
-
     return (
         <>
-            <Modal opened={props.open} onClose={props.onClose} centered withCloseButton={false}>
-                <Flex direction='column' gap={'lg'} align={'flex-end'} p={'lg'}>
-
+            <Modal
+                size={'xs'}
+                opened={props.open}
+                onClose={props.onClose}
+                centered
+                withCloseButton={false}
+            >
+                <Flex
+                    direction='column'
+                    gap={'lg'}
+                    p={'lg'}
+                >
                     <TextInput
+                        data-autoFocus
                         value={usernameValue}
                         onChange={setUsernameValue}
                         w={'100%'}
                         label="Username"
                         radius={'lg'}
-                        withAsterisk />
+                        withAsterisk
+                    />
 
-                    {register ?
-                        <TextInput
-                            value={emailValue}
-                            onChange={setEmailValue}
-                            w={'100%'}
-                            label="Email"
-                            radius={'lg'}
-                            withAsterisk />
-                        : null
+                    {
+                        register ?
+                            <TextInput
+                                value={emailValue}
+                                onChange={setEmailValue}
+                                w={'100%'}
+                                label="Email"
+                                radius={'lg'}
+                                withAsterisk />
+                            : null
                     }
                     <PasswordInput
                         value={passwordValue}
@@ -109,17 +111,20 @@ export default function LoginModal(props:any) {
                         radius="lg"
                         withAsterisk
                     />
-                    {register ?
-                        <FileInput
-                            value={imageValue}
-                            onChange={setImageValue}
-                            radius={'lg'}
-                            w={'100%'}
-                            label="Upload Profile Picture"
-                            placeholder="Upload Profile Picture" />
-                        : null
+                    {
+                        register ?
+                            <FileInput
+                                value={imageValue}
+                                onChange={setImageValue}
+                                radius={'lg'}
+
+                                label="Upload Profile Picture"
+                                placeholder="Upload Profile Picture" />
+                            : null
                     }
-                    <Button.Group mt={'lg'}>
+                    <Button.Group
+                        mt={'lg'}
+                    >
                         <Button
                             onClick={register ? handleRegister : handleRegisterClick}
                             styles={(theme) => ({
@@ -136,23 +141,24 @@ export default function LoginModal(props:any) {
                         >
                             Register
                         </Button>
-                        {register ? null :
-                            <Button
-                                onClick={handleSignIn}
-                                styles={(theme) => ({
-                                    root: {
-                                        backgroundColor: 'transparent',
-                                        color: theme.colors.sitePrimary[0],
-                                        '&:hover': {
+                        {
+                            register ? null :
+                                <Button
+                                    onClick={handleSignIn}
+                                    styles={(theme) => ({
+                                        root: {
                                             backgroundColor: 'transparent',
+                                            color: theme.colors.sitePrimary[0],
+                                            '&:hover': {
+                                                backgroundColor: 'transparent',
+                                            }
                                         }
-                                    }
-                                })
+                                    })
 
-                                }
-                            >
-                                Sign-In
-                            </Button>
+                                    }
+                                >
+                                    Sign-In
+                                </Button>
                         }
                     </Button.Group>
                 </Flex>

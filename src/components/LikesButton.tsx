@@ -29,8 +29,6 @@ export default function LikesButton(props: any) {
         if (likes > 0) {
             setLikes(likes - 1);
         }
-
-        
     };
 
     const addLike = () => {
@@ -41,26 +39,27 @@ export default function LikesButton(props: any) {
         setLikes(likes + 1);
     };
 
-   
-
     return (
-        <Button.Group orientation="vertical" sx={
-            {
-                width: "fit-content",
-                borderRadius: "0.5rem",
-                alignItems: "center",
-                margin: "0.5rem",
+        <Button.Group
+            orientation="vertical"
+            sx={
+                {
+                    width: "fit-content",
+                    borderRadius: "0.5rem",
+                    alignItems: "center",
+                    margin: "0.5rem",
+                }
             }
-        }
-
         >
             <Button
                 w={"100%"}
                 color={"siteNeutral.2"}
-                onClick={addLike}>
+                onClick={addLike}
+            >
                 <Text
                     color={"sitePrimary.2"}
-                    weight={'bold'}>
+                    weight={'bold'}
+                >
                     +
                 </Text>
             </Button>
@@ -70,17 +69,20 @@ export default function LikesButton(props: any) {
                 color={"sitePrimary.0"}
                 weight={'bold'}
                 w={"100%"}
-                bg={"siteNeutral.2"}>
+                bg={"siteNeutral.2"}
+            >
                 {likes}
             </Text>
 
             <Button
                 w={'100%'}
                 color={"siteNeutral.2"}
-                onClick={subtractLike}>
+                onClick={subtractLike}
+            >
                 <Text
                     color={"sitePrimary.2"}
-                    weight={'bold'}>
+                    weight={'bold'}
+                >
                     -
                 </Text>
             </Button>

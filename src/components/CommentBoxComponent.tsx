@@ -1,4 +1,4 @@
-import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea, Notification, Alert } from '@mantine/core'
+import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea } from '@mantine/core'
 import Moment from 'react-moment'
 import { useState } from 'react';
 import axios from 'axios';
@@ -8,20 +8,19 @@ import deleteIcon from '../../images/icon-delete.svg'
 import editIcon from '../../images/icon-edit.svg'
 
 import LikesButton from './LikesButton'
+import ReplyBoxComponent from './ReplyBoxComponent';
 
 import { endpoint } from '../helpers/useUser'
 import useUser from '../helpers/useUser'
 
-
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
-import ReplyBoxComponent from './ReplyBoxComponent';
 
 export default function CommentBoxComponent(props: any) {
     const user = useRecoilValue(userState)
+    const { mutate } = useUser(endpoint + '/api/toka')
 
     const [comment, setComment] = useState('');
-    const { mutate } = useUser(endpoint + '/api/toka')
     const [edit, setEdit] = useState(false)
     const [reply, setReply] = useState(false)
 
@@ -65,30 +64,36 @@ export default function CommentBoxComponent(props: any) {
     return (
         <>
             <Card ml={props.marginLeft} display={'flex'} w={props.wid || '50rem'} h={'auto'} radius="lg" p="md">
-                <LikesButton like={props.like} id={props.id}/>
+                <LikesButton like={props.like} id={props.id} />
                 <Flex
                     align={'flex-end'}
                     direction="column"
                     p="md"
                     gap={'lg'}
-                    w={"100%"}>
+                    w={"100%"}
+                >
                     <Grid
                         grow
                         align={"center"}
-                        w={"100%"}>
+                        w={"100%"}
+                    >
                         <Grid.Col
                             display={'flex'}
                             span={'auto'}
-                            sx={{ justifyContent: 'center' }}>
-
+                            sx={{ justifyContent: 'center' }}
+                        >
                             <Avatar
                                 radius="xl"
                                 src={props.img}
-                                alt="profile_img" />
+                                alt="profile_img"
+                            />
                         </Grid.Col>
 
                         <Grid.Col span={'content'}>
-                            <Text align='left' weight={'bold'} color='siteNeutral.0' >
+                            <Text
+                                align='left'
+                                weight={'bold'}
+                                color='siteNeutral.0' >
                                 {props.name}
                                 {
                                     user.isLoggedin && props.name == user.name ?
@@ -100,14 +105,14 @@ export default function CommentBoxComponent(props: any) {
                                             bg={'sitePrimary.0'}
                                             color='white'
                                             align='center'
-                                            sx={{ borderRadius: '2px' }}>
+                                            sx={{ borderRadius: '2px' }}
+                                        >
                                             you
                                         </Text>
                                         :
                                         null
                                 }
                             </Text>
-
                         </Grid.Col>
 
                         <Grid.Col span={3}>
@@ -137,7 +142,8 @@ export default function CommentBoxComponent(props: any) {
                                             })
 
                                             }
-                                            leftIcon={<Image src={deleteIcon} />}>
+                                            leftIcon={<Image src={deleteIcon} />}
+                                        >
                                             Delete
                                         </Button>
 
@@ -151,21 +157,20 @@ export default function CommentBoxComponent(props: any) {
                                                         backgroundColor: 'transparent',
                                                     }
                                                 }
-                                            })
-
-                                            }
-                                            leftIcon={<Image src={editIcon} />}>
+                                            })}
+                                            leftIcon={<Image src={editIcon} />}
+                                        >
                                             {edit ? 'Cancel' : 'Edit'}
                                         </Button>
                                     </Button.Group>
                                 </Grid.Col>
                                 :
                                 <Grid.Col
-                                    
                                     display={'flex'}
                                     span={2}
                                     offset={4}
-                                    sx={{ justifyContent: "flex-end" }}>
+                                    sx={{ justifyContent: "flex-end" }}
+                                >
                                     <Button
                                         disabled={props.replyDisabled}
                                         onClick={handleReply}
@@ -177,9 +182,9 @@ export default function CommentBoxComponent(props: any) {
                                                     backgroundColor: 'transparent',
                                                 }
                                             }
-                                        })
-
-                                        } leftIcon={props.replyDisabled?null:<Image src={replyIcon}/>}>
+                                        })}
+                                        leftIcon={props.replyDisabled ? null : <Image src={replyIcon} />}
+                                    >
                                         Reply
                                     </Button>
                                 </Grid.Col>
@@ -199,7 +204,8 @@ export default function CommentBoxComponent(props: any) {
                                 autosize
                                 radius={'md'}
                                 w={'100%'}
-                                minRows={3}>
+                                minRows={3}
+                            >
                             </Textarea>
                             : props.content
                         }
@@ -220,7 +226,8 @@ export default function CommentBoxComponent(props: any) {
                                 }
                             })
 
-                            }>
+                            }
+                        >
                             Update
                         </Button>
                         : null
@@ -228,9 +235,9 @@ export default function CommentBoxComponent(props: any) {
                 </Flex>
             </Card>
             {
-            <Flex align={'flex-end'} direction="column" w={'50rem'}>
-            {user.isLoggedin && reply && <ReplyBoxComponent edit={reply} parent_id={props.id} />}
-            </Flex>
+                <Flex align={'flex-end'} direction="column" w={'50rem'}>
+                    {user.isLoggedin && reply && <ReplyBoxComponent edit={reply} parent_id={props.id} />}
+                </Flex>
             }
         </>
     );

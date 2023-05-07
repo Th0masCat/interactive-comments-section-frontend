@@ -15,8 +15,8 @@ import { useRecoilValue } from 'recoil';
 import { useState } from "react";
 
 export default function HomePage() {
-  const { comments, isLoading } = useUser(endpoint + '/api/toka')
   const user = useRecoilValue(userState)
+  const { comments, isLoading } = useUser(endpoint + '/api/toka')
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
 
@@ -30,7 +30,6 @@ export default function HomePage() {
 
   return (
     <AppShell
-
       styles={(theme) => ({
         main: {
           backgroundColor:
@@ -39,22 +38,50 @@ export default function HomePage() {
               : theme.colors.gray[0],
         },
       })}
+
       header={
-        <Header height={60} display={'flex'} p={'sm'}>
+        <Header
+          height={60}
+          display={'flex'}
+          p={'sm'}
+        >
           {
             user.isLoggedin ?
-              <Flex align="center" justify="space-between" w="100%">
-                <Text size="xl" weight={700} color='siteNeutral.1'>Toka</Text>
-                <Flex align="center" justify="space-between" gap={"xs"}>
-                  <Text size="sm" weight={700} color='siteNeutral.1'>Welcome, {user.name}</Text>
+              <Flex
+                align="center"
+                justify="space-between"
+                w="100%"
+              >
+                <Text
+                  size="xl"
+                  weight={700}
+                  color='siteNeutral.1'
+                >
+                  Toka
+                </Text>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  gap={"xs"}
+                >
+                  <Text
+                    size="sm"
+                    weight={700}
+                    color='siteNeutral.1'
+                  >
+                    Welcome, {user.name}
+                  </Text>
 
-                  <Popover position="bottom" withArrow>
+                  <Popover
+                    position="bottom"
+                    withArrow>
                     <Popover.Target>
                       <Avatar
                         radius="xl"
                         src={endpoint + user.user_image}
                         alt="profile_img" />
                     </Popover.Target>
+
                     <Popover.Dropdown>
                       <Button
                         styles={(theme) => ({
@@ -76,34 +103,86 @@ export default function HomePage() {
                 </Flex>
               </Flex>
               :
-              <Flex align="center" justify="space-between" w="100%">
-                <Text size="xl" weight={700} color='siteNeutral.1'>Toka</Text>
+              <Flex
+                align="center"
+                justify="space-between"
+                w="100%">
+                <Text
+                  size="xl"
+                  weight={700}
+                  color='siteNeutral.1'
+                >
+                  Toka
+                </Text>
                 <Avatar
                   onClick={handleLoginClick}
                   radius="xl"
                   alt="profile_img" />
-                <LoginModal open={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+                <LoginModal
+                  open={isLoginModalOpen}
+                  onClose={() => setIsLoginModalOpen(false)}
+                />
               </Flex>
-
           }
-
         </Header>
-
       }
     >
-      <Flex direction="column" align="center" gap={'md'}>
-        <Flex direction={"column"} w={'50rem'}>
+      <Flex
+        direction="column"
+        align="center"
+        gap={'md'}>
+        <Flex
+          direction={"column"}
+          w={'50rem'}>
 
-          <Text size="xl" weight={700} w={'50rem'} color='siteNeutral.1'>Hotdogs are real???</Text>
-          <Text size="xs" weight={400} w={'50rem'} color='siteNeutral.1' mb={'lg'}>Posted by rex2187</Text>
+          <Text
+            size="xl"
+            weight={700}
+            w={'50rem'}
+            color='siteNeutral.1'
+          >
+            Hotdogs are real???
+          </Text>
+          <Text
+            size="xs"
+            weight={400}
+            w={'50rem'}
+            color='siteNeutral.1'
+            mb={'lg'}
+          >
+            Posted by rex2187
+          </Text>
 
-          <Image src="https://i.giphy.com/media/5E7vDOIamcWlzg97TG/giphy.webp" radius={'lg'} height={500} mb={"xl"} />
-          <Skeleton height={8} animate={false} radius="xl" />
-          <Skeleton height={8} animate={false} mt={6} radius="xl" />
-          <Skeleton height={8} animate={false} mt={6} width="70%" radius="xl" />
-
+          <Image
+            src="https://i.giphy.com/media/5E7vDOIamcWlzg97TG/giphy.webp"
+            radius={'lg'}
+            height={500}
+            mb={"xl"}
+          />
+          <Skeleton
+            height={8}
+            animate={false}
+            radius="xl" />
+          <Skeleton
+            height={8}
+            animate={false}
+            mt={6}
+            radius="xl"
+          />
+          <Skeleton
+            height={8}
+            animate={false}
+            mt={6}
+            width="70%"
+            radius="xl"
+          />
         </Flex>
-        <Text size="lg" weight={700} w={'50rem'} color='siteNeutral.0'>
+        <Text
+          size="lg"
+          weight={700}
+          w={'50rem'}
+          color='siteNeutral.0'
+        >
           Comments:
         </Text>
         <CommentBoxComponent

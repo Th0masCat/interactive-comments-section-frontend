@@ -11,14 +11,12 @@ import { endpoint } from "../helpers/useUser";
 import avatar from '../../images/avatars/image-amyrobson.png'
 
 import { userState } from '../atoms/userAtom';
-
 import { useRecoilValue } from 'recoil';
+import { useEffect } from "react";
 
 export default function HomePage() {
   const { comments, isLoading } = useUser(endpoint + '/api/toka')
-
   const user = useRecoilValue(userState)
-
 
   return (
     <AppShell
@@ -31,7 +29,7 @@ export default function HomePage() {
         },
       })}
     >
-      <LoginModal/>
+      <LoginModal />
       <Flex direction="column" align="center" gap={'md'}>
         <CommentBoxComponent
           img={avatar}
@@ -53,16 +51,45 @@ export default function HomePage() {
             :
             comments?.map((comment: any) => {
               return (
-                <CommentBoxComponent
-                  loggedInUser = {user.isLoggedin}
-                  id={comment.id}
-                  key={comment.id}
-                  img={endpoint + comment.user_details.user_image}
-                  like={comment.likes}
-                  name={comment.user_details.name}
-                  time={comment.time_when_posted}
-                  content={comment.post_content} />
+                <>
+                  {
+                    comment.parent_post === null &&
+                    <CommentBoxComponent
+                      loggedInUser={user.isLoggedin}
+                      id={comment.id}
+                      key={comment.id}
+                      img={endpoint + comment.user_details.user_image}
+                      like={comment.likes}
+                      name={comment.user_details.name}
+                      time={comment.time_when_posted}
+                      content={comment.post_content} />
+                  }
+                  {
+                    comments?.map((reply: any) => {
+                      if (reply.parent_post === comment.id) {
+                        return (
+                          <Flex align={'flex-end'} direction="column" w={'50rem'}>
+                          <CommentBoxComponent
+                            replyDisabled={true}
+                            marginLeft={'2rem'}
+                            wid={'45rem'}
+                            loggedInUser={user.isLoggedin}
+                            id={reply.id}
+                            key={reply.id}
+                            img={endpoint + reply.user_details.user_image}
+                            like={reply.likes}
+                            name={reply.user_details.name}
+                            time={reply.time_when_posted}
+                            content={reply.post_content} />
+                          </Flex>
+                        )
+                      }
+                    })
+                  }
+                </>
+
               )
+
             })
         }
         {user.isLoggedin && <ReplyBoxComponent />}

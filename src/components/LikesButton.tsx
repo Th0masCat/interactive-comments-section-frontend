@@ -1,23 +1,47 @@
 import { useEffect, useState } from "react";
 import { Button, Text } from "@mantine/core";
 
+import { endpoint } from '../helpers/useUser'
+import { userState } from '../atoms/userAtom';
+import { useRecoilValue } from 'recoil';
+
+import axios from "axios";
+
 export default function LikesButton(props: any) {
-    const [likes, setLikes] = useState(0);
+    const [likes, setLikes] = useState(props.like);
+    const user = useRecoilValue(userState)
 
     useEffect(() => {
-        setLikes(props.like)
-    }, [props.like]);
-    
+        axios.put(endpoint + '/api/toka/', {
+            id: props.id,
+            likes: likes
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [likes])
+
     const subtractLike = () => {
+        if (!user.isLoggedin) {
+            alert('You must be logged in to like.')
+            return
+        }
+
         if (likes > 0) {
             setLikes(likes - 1);
         }
+
+        
     };
 
     const addLike = () => {
+        if (!user.isLoggedin) {
+            alert('You must be logged in to like.')
+            return
+        }
         setLikes(likes + 1);
     };
 
+   
 
     return (
         <Button.Group orientation="vertical" sx={

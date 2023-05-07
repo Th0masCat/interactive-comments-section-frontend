@@ -1,12 +1,12 @@
 import { Card, Flex, Button, Textarea, Avatar } from '@mantine/core'
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import useUser from '../helpers/useUser';
 import { endpoint } from '../helpers/useUser';
 
 import { userState } from '../atoms/userAtom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 export default function ReplyBoxComponent(props:any) {
     
@@ -14,6 +14,7 @@ export default function ReplyBoxComponent(props:any) {
 
     const [comment, setComment] = useState('');
     const { mutate } = useUser(endpoint+'/api/toka')    
+    const [edit, setEdit] = useState(props.edit)
 
     const handleSubmit = (e:any) => {
         e.preventDefault();
@@ -21,13 +22,15 @@ export default function ReplyBoxComponent(props:any) {
             username: user.name,
             post_content: comment,
             likes: 0,
+            parent_post: props.parent_id,
         })
         setComment('')
-        
+        setEdit(false)
         mutate()
         console.log('You clicked submit.');
     }
 
+    if(edit){
     return (
         <Card
             w={'45rem'}
@@ -73,4 +76,7 @@ export default function ReplyBoxComponent(props:any) {
             </Flex>
         </Card>
     );
+    }else{
+        return null
+    }
 }

@@ -1,8 +1,6 @@
 import { useDisclosure, useInputState } from '@mantine/hooks';
 import { Modal, Group, Button, PasswordInput, TextInput, Flex, FileInput } from '@mantine/core';
 import { useState } from 'react';
-
-
 import { endpoint } from '../helpers/useUser'
 import { userState } from '../atoms/userAtom';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -12,7 +10,6 @@ export default function Demo() {
     const [usernameValue, setUsernameValue] = useInputState('');
     const [emailValue, setEmailValue] = useInputState('');
     const [passwordValue, setPasswordValue] = useInputState('');
-
 
     const [opened, { open, close }] = useDisclosure(true);
 

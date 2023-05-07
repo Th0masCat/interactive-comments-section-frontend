@@ -117,13 +117,19 @@ export default function LoginModal(props: any) {
                                 value={imageValue}
                                 onChange={setImageValue}
                                 radius={'lg'}
-
                                 label="Upload Profile Picture"
-                                placeholder="Upload Profile Picture" />
+                                placeholder="Select Profile Picture" />
                             : null
                     }
                     <Button.Group
                         mt={'lg'}
+                        orientation='horizontal'
+                        sx={
+                            {
+                                justifyContent: 'flex-end'
+
+                        }
+                    }
                     >
                         <Button
                             onClick={register ? handleRegister : handleRegisterClick}

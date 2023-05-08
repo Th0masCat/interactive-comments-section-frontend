@@ -55,7 +55,7 @@ export default function CommentBoxComponent(props: any) {
             alert('You must be logged in to reply.')
             return
         }
-
+        mutate()
         setReply(!reply)
         console.log('Reply')
     }

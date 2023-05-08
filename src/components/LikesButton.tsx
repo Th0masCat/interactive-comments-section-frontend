@@ -11,17 +11,17 @@ export default function LikesButton(props: any) {
     const [likes, setLikes] = useState(props.like);
     const user = useRecoilValue(userState)
 
-    useEffect(() => {
-        if (props.id === undefined) {
-            return
-        }
-        axios.put(endpoint + '/api/toka/', {
-            id: props.id,
-            likes: likes
-        }).catch((error) => {
-            console.log(error)
-        })
-    }, [likes])
+    // useEffect(() => {
+    //     if (props.id === undefined) {
+    //         return
+    //     }
+    //     axios.put(endpoint + '/api/toka/', {
+    //         id: props.id,
+    //         likes: likes
+    //     }).catch((error) => {
+    //         console.log(error)
+    //     })
+    // }, [likes])
 
     const subtractLike = () => {
         if (!user.isLoggedin) {

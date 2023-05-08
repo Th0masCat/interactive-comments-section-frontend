@@ -32,18 +32,15 @@ function buildForest(data: { [key: number]: number[] }) {
   const nodes: { [key: number]: any } = {};
   const roots: any = [];
 
-  // First, create all the nodes
   for (const key of Object.keys(data)) {
     const value = parseInt(key, 10);
     nodes[value] = { value, children: [] };
   }
 
-  // Then, connect the nodes to each other
   for (const [key, children] of Object.entries(data)) {
     const node = nodes[parseInt(key, 10)];
     node.children = children.map(child => nodes[child]);
 
-    // If this node has no parent, it's a root node
     if (!Object.values(data).flat().includes(node.value)) {
       roots.push(node);
     }
@@ -55,7 +52,11 @@ function buildForest(data: { [key: number]: number[] }) {
 
 export default function HomePage() {
   const user = useRecoilValue(userState)
-  const { comments, isLoading, mutate } = useUser(endpoint + '/api/toka')
+
+  const [dataDictionary, setDataDictionary] = useState({} as any)
+  const [commentTree, setCommentTree] = useState({} as any)
+  const [forest, setForest] = useState([] as any)
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
 
   const handleLoginClick = () => {
@@ -66,20 +67,24 @@ export default function HomePage() {
     window.location.reload();
   };
 
+  const [comment, setComment] = useState([] as any)
 
-  const [dataDictionary, setDataDictionary] = useState({} as any)
-  const [commentTree, setCommentTree] = useState({} as any)
-  const [forest, setForest] = useState([] as any)
-
+  const { comments, mutate, isLoading } = useUser(endpoint + '/api/toka')
+  mutate()
 
   useEffect(() => {
-    if (comments === undefined) return
+    if (comments != null) {
+      setComment(comments);
+    }
+  }, [comments]);
 
-    comments?.map((item: any) => {
-      setDataDictionary((prev: any) => ({
-        ...prev,
-        [item.id]: item
-      }))
+  useEffect(() => {
+    comment.map((item: any) => {
+      setDataDictionary((prevState: any) => (
+        {
+          ...prevState,
+          [item.id]: item
+        }))
 
       setCommentTree((prevState: any) => ({
         ...prevState,
@@ -94,23 +99,25 @@ export default function HomePage() {
           }))
       }
     })
-    setForest(buildForest(commentTree))
-    
-    console.log(forest)
-    console.log(commentTree)
-    console.log(dataDictionary)
-  }, [comments])
+  }, [comment]);
 
-  function Tree(node:any, depth: any) {
-    mutate()
+  useEffect(() => {
+    if (Object.keys(dataDictionary).length > 0) {
+      setForest(buildForest(commentTree))
+      console.log(forest)
+    }
+
+  }, [dataDictionary, commentTree]);
+
+  function Tree(node: any, depth: any) {
     return (
       <>
         <CommentBoxComponent
-          key={dataDictionary[node.value].id*2}
+          key={dataDictionary[node.value].id * 2}
           marginLeft={`${2 * depth}rem`}
           loggedInUser={user.isLoggedin}
           id={dataDictionary[node.value].id}
-          
+
           img={endpoint + dataDictionary[node.value].user_details.user_image}
           like={dataDictionary[node.value].likes}
           name={dataDictionary[node.value].user_details.name}
@@ -121,14 +128,13 @@ export default function HomePage() {
           node.children.map((child: any) => (
             Tree(child, depth + 1)
           ))
-          }
+        }
       </>
     );
   }
 
   function renderForest(forest: any) {
-    mutate()
-    return forest.map((tree:any) => Tree(tree, 0));
+    return forest.map((tree: any) => Tree(tree, 0));
   }
 
 
@@ -307,10 +313,12 @@ export default function HomePage() {
               <SkeletonComponent />
             </>
             :
-            renderForest(forest)
+            <>
+              {renderForest(forest)}
+            </>
         }
         {user.isLoggedin && <ReplyBoxComponent />}
-      
+
       </Flex >
     </AppShell>
   );

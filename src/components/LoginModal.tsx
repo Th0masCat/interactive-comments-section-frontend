@@ -71,6 +71,7 @@ export default function LoginModal(props: any) {
     return (
         <>
             <Modal
+                radius={'lg'}
                 size={'xs'}
                 opened={props.open}
                 onClose={props.onClose}
@@ -83,7 +84,7 @@ export default function LoginModal(props: any) {
                     p={'lg'}
                 >
                     <TextInput
-                        data-autoFocus
+                        data-autofocus
                         value={usernameValue}
                         onChange={setUsernameValue}
                         w={'100%'}

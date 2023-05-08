@@ -1,4 +1,15 @@
-import { AppShell, Flex, Text, Skeleton, Image, Header, Avatar, Button, Popover } from "@mantine/core";
+import {
+  AppShell,
+  Flex,
+  Text,
+  Skeleton,
+  Image,
+  Header,
+  Avatar,
+  Button,
+  Popover,
+  Box
+} from "@mantine/core";
 
 import CommentBoxComponent from "./CommentBoxComponent";
 import ReplyBoxComponent from "./ReplyBoxComponent";
@@ -12,12 +23,39 @@ import avatar from '../../images/avatars/image-amyrobson.png'
 
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import useSWR from 'swr'
+import axios from 'axios'
+
+function buildForest(data: { [key: number]: number[] }) {
+  const nodes: { [key: number]: any } = {};
+  const roots: any = [];
+
+  // First, create all the nodes
+  for (const key of Object.keys(data)) {
+    const value = parseInt(key, 10);
+    nodes[value] = { value, children: [] };
+  }
+
+  // Then, connect the nodes to each other
+  for (const [key, children] of Object.entries(data)) {
+    const node = nodes[parseInt(key, 10)];
+    node.children = children.map(child => nodes[child]);
+
+    // If this node has no parent, it's a root node
+    if (!Object.values(data).flat().includes(node.value)) {
+      roots.push(node);
+    }
+  }
+
+  return roots;
+}
+
 
 export default function HomePage() {
   const user = useRecoilValue(userState)
-  const { comments, isLoading } = useUser(endpoint + '/api/toka')
-
+  const { comments, isLoading, mutate } = useUser(endpoint + '/api/toka')
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
 
   const handleLoginClick = () => {
@@ -27,6 +65,72 @@ export default function HomePage() {
   const handleLogout = () => {
     window.location.reload();
   };
+
+
+  const [dataDictionary, setDataDictionary] = useState({} as any)
+  const [commentTree, setCommentTree] = useState({} as any)
+  const [forest, setForest] = useState([] as any)
+
+
+  useEffect(() => {
+    if (comments === undefined) return
+
+    comments?.map((item: any) => {
+      setDataDictionary((prev: any) => ({
+        ...prev,
+        [item.id]: item
+      }))
+
+      setCommentTree((prevState: any) => ({
+        ...prevState,
+        [item.id]: []
+      }))
+
+      if (item.parent_post) {
+        setCommentTree((prevState: any) => (
+          {
+            ...prevState,
+            [item.parent_post]: [...prevState[item.parent_post], item.id]
+          }))
+      }
+    })
+    setForest(buildForest(commentTree))
+    
+    console.log(forest)
+    console.log(commentTree)
+    console.log(dataDictionary)
+  }, [comments])
+
+  function Tree(node:any, depth: any) {
+    mutate()
+    return (
+      <>
+        <CommentBoxComponent
+          key={dataDictionary[node.value].id*2}
+          marginLeft={`${2 * depth}rem`}
+          loggedInUser={user.isLoggedin}
+          id={dataDictionary[node.value].id}
+          
+          img={endpoint + dataDictionary[node.value].user_details.user_image}
+          like={dataDictionary[node.value].likes}
+          name={dataDictionary[node.value].user_details.name}
+          time={dataDictionary[node.value].time_when_posted}
+          content={dataDictionary[node.value].post_content}
+        />
+        {
+          node.children.map((child: any) => (
+            Tree(child, depth + 1)
+          ))
+          }
+      </>
+    );
+  }
+
+  function renderForest(forest: any) {
+    mutate()
+    return forest.map((tree:any) => Tree(tree, 0));
+  }
+
 
   return (
     <AppShell
@@ -184,6 +288,7 @@ export default function HomePage() {
         >
           Comments:
         </Text>
+
         <CommentBoxComponent
           img={avatar}
           like={3}
@@ -202,51 +307,11 @@ export default function HomePage() {
               <SkeletonComponent />
             </>
             :
-            comments?.map((comment: any) => {
-              return (
-                <>
-                  {
-                    comment.parent_post === null &&
-                    <CommentBoxComponent
-                      loggedInUser={user.isLoggedin}
-                      id={comment.id}
-                      key={comment.id}
-                      img={endpoint + comment.user_details.user_image}
-                      like={comment.likes}
-                      name={comment.user_details.name}
-                      time={comment.time_when_posted}
-                      content={comment.post_content} />
-                  }
-                  {
-                    comments?.map((reply: any) => {
-                      if (reply.parent_post === comment.id) {
-                        return (
-                          <Flex align={'flex-end'} gap={'md'} direction="column" w={'50rem'}>
-                            <CommentBoxComponent
-                              replyDisabled={true}
-                              marginLeft={'2rem'}
-                              wid={'45rem'}
-                              loggedInUser={user.isLoggedin}
-                              id={reply.id}
-                              key={reply.id}
-                              img={endpoint + reply.user_details.user_image}
-                              like={reply.likes}
-                              name={reply.user_details.name}
-                              time={reply.time_when_posted}
-                              content={reply.post_content} />
-                          </Flex>
-                        )
-                      }
-                    })
-                  }
-                </>
-
-              )
-
-            })
+            renderForest(forest)
         }
         {user.isLoggedin && <ReplyBoxComponent />}
-      </Flex>
+      
+      </Flex >
     </AppShell>
   );
 }

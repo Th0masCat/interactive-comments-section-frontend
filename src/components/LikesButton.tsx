@@ -12,6 +12,9 @@ export default function LikesButton(props: any) {
     const user = useRecoilValue(userState)
 
     useEffect(() => {
+        if (props.id === undefined) {
+            return
+        }
         axios.put(endpoint + '/api/toka/', {
             id: props.id,
             likes: likes

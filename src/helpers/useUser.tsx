@@ -1,8 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
 
-export const endpoint = 'http://127.0.0.1:8000'
+export const endpoint = 'http://th0mascat.pythonanywhere.com'
 
 export default function useUser(id: any) {
 

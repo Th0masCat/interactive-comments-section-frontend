@@ -23,10 +23,11 @@ export default function ReplyBoxComponent(props: any) {
             post_content: comment,
             likes: 0,
             parent_post: props.parent_id,
-        })
+        }).then(
+            ()=>mutate()
+        )
         setComment('')
         setEdit(false)
-        mutate()
         console.log('You clicked submit.');
     }
 

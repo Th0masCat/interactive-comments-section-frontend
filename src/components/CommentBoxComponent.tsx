@@ -34,8 +34,10 @@ export default function CommentBoxComponent(props: any) {
         axios.put(endpoint + '/api/toka/', {
             id: props.id,
             post_content: comment
-        })
-        mutate()
+        }).then(
+            ()=>mutate()
+        )
+       
         setEdit(false)
         console.log('Edit')
     }
@@ -45,9 +47,9 @@ export default function CommentBoxComponent(props: any) {
             data: {
                 id: props.id
             }
-        })
-        window.location.reload();
-        mutate()
+        }).then(
+            ()=>mutate()
+        )
         console.log('Delete')
     }
 

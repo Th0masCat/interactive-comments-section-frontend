@@ -25,36 +25,8 @@ import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 import { useEffect, useState } from "react";
 
-function buildForest(data: { [key: number]: number[] }) {
-  const nodes: { [key: number]: any } = {};
-  const roots: any = [];
-
-  for (const key of Object.keys(data)) {
-    const value = parseInt(key, 10);
-    nodes[value] = { value, children: [] };
-  }
-
-  for (const [key, children] of Object.entries(data)) {
-    const node = nodes[parseInt(key, 10)];
-    node.children = children.map(child => nodes[child]);
-
-    if (!Object.values(data).flat().includes(node.value)) {
-      roots.push(node);
-    }
-  }
-
-  return roots;
-}
-
-
-
-
 export default function HomePage() {
   const user = useRecoilValue(userState)
-
-  const [dataDictionary, setDataDictionary] = useState({} as any)
-  const [commentTree, setCommentTree] = useState({} as any)
-  const [forest, setForest] = useState([] as any)
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
 
@@ -66,61 +38,23 @@ export default function HomePage() {
     window.location.reload();
   };
 
-  const [comment, setComment] = useState([] as any)
 
   const { comments, mutate, isLoading } = useUser(endpoint + '/api/toka')
 
-  useEffect(() => {
-    if (comments != null) {
-      setComment(comments);
-    }
-  }, [comments]);
-
-  useEffect(() => {
-    comment.map((item: any) => {
-      setDataDictionary((prevState: any) => (
-        {
-          ...prevState,
-          [item.id]: item
-        }))
-
-      setCommentTree((prevState: any) => ({
-        ...prevState,
-        [item.id]: []
-      }))
-
-      if (item.parent_post) {
-        setCommentTree((prevState: any) => (
-          {
-            ...prevState,
-            [item.parent_post]: [...prevState[item.parent_post], item.id]
-          }))
-      }
-    })
-  }, [comment]);
-
-  useEffect(() => {
-    if (Object.keys(dataDictionary).length > 0) {
-      setForest(buildForest(commentTree))
-      console.log(forest)
-    }
-
-  }, [dataDictionary, commentTree]);
 
   function Tree(node: any, depth: any) {
     return (
       <>
         <CommentBoxComponent
-          key={dataDictionary[node.value].id * 2}
+          key={node.data.id * 2}
           marginLeft={`${2 * depth}rem`}
           loggedInUser={user.isLoggedin}
-          id={dataDictionary[node.value].id}
-
-          img={endpoint + dataDictionary[node.value].user_details.user_image}
-          like={dataDictionary[node.value].likes}
-          name={dataDictionary[node.value].user_details.name}
-          time={dataDictionary[node.value].time_when_posted}
-          content={dataDictionary[node.value].post_content}
+          id={node.data.id}
+          img={endpoint + node.data.user_details.user_image}
+          like={node.data.likes}
+          name={node.data.user_details.name}
+          time={node.data.time_when_posted}
+          content={node.data.post_content}
         />
         {
           node.children.map((child: any) => (
@@ -312,7 +246,7 @@ export default function HomePage() {
             </>
             :
             <>
-              {renderForest(forest)}
+              {renderForest(comments)}
             </>
         }
         {user.isLoggedin && <ReplyBoxComponent />}

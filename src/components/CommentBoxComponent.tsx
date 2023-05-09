@@ -66,11 +66,9 @@ export default function CommentBoxComponent(props: any) {
         mutate(
             (data: any) => {
                 return data.filter((item: any) => {
-                    item.data.id !== props.id 
-                    item.children.filter((child: any) => {
-                        child.data.id !== props.id
+                    if (item.data.id !== props.id) {
+                        return item
                     }
-                    )
                 })
             }, true
         )

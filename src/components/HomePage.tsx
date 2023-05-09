@@ -25,9 +25,6 @@ import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 import { useEffect, useState } from "react";
 
-import useSWR from 'swr'
-import axios from 'axios'
-
 function buildForest(data: { [key: number]: number[] }) {
   const nodes: { [key: number]: any } = {};
   const roots: any = [];
@@ -50,6 +47,8 @@ function buildForest(data: { [key: number]: number[] }) {
 }
 
 
+
+
 export default function HomePage() {
   const user = useRecoilValue(userState)
 
@@ -70,7 +69,6 @@ export default function HomePage() {
   const [comment, setComment] = useState([] as any)
 
   const { comments, mutate, isLoading } = useUser(endpoint + '/api/toka')
-  mutate()
 
   useEffect(() => {
     if (comments != null) {

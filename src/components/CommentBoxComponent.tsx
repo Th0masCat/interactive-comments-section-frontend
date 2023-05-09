@@ -16,6 +16,7 @@ import useUser from '../helpers/useUser'
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 
+
 export default function CommentBoxComponent(props: any) {
     const user = useRecoilValue(userState)
     const { mutate } = useUser(endpoint + '/api/toka')
@@ -35,7 +36,6 @@ export default function CommentBoxComponent(props: any) {
             post_content: comment
         })
         mutate()
-
         setEdit(false)
         console.log('Edit')
     }
@@ -46,6 +46,7 @@ export default function CommentBoxComponent(props: any) {
                 id: props.id
             }
         })
+        window.location.reload();
         mutate()
         console.log('Delete')
     }
@@ -55,11 +56,9 @@ export default function CommentBoxComponent(props: any) {
             alert('You must be logged in to reply.')
             return
         }
-        mutate()
         setReply(!reply)
         console.log('Reply')
     }
-
 
     return (
         <>

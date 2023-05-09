@@ -40,7 +40,7 @@ export default function ReplyBoxComponent(props: any) {
                     gap="sm"
                     justify={'space-between'}>
                     <Avatar
-                        src={endpoint + user.user_image}
+                        src={user.isLoggedin?endpoint + user.user_image: ''}
                         alt="user_avatar"
                         sx={{ borderRadius: '20rem' }}
                     />

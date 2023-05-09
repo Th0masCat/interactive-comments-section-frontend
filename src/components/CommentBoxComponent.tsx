@@ -37,7 +37,7 @@ export default function CommentBoxComponent(props: any) {
         }).then(
             ()=>mutate()
         )
-       
+
         setEdit(false)
         console.log('Edit')
     }
@@ -184,9 +184,9 @@ export default function CommentBoxComponent(props: any) {
                                                 }
                                             }
                                         })}
-                                        leftIcon={props.replyDisabled ? null : <Image src={replyIcon} />}
+                                        leftIcon={<Image src={replyIcon} />}
                                     >
-                                        Reply
+                                        {reply ? 'Cancel' : 'Reply'}
                                     </Button>
                                 </Grid.Col>
                         }
@@ -237,7 +237,7 @@ export default function CommentBoxComponent(props: any) {
             </Card>
             {
                 <Flex align={'flex-end'} direction="column" w={'50rem'}>
-                    {user.isLoggedin && reply && <ReplyBoxComponent edit={reply} parent_id={props.id} />}
+                    {user.isLoggedin && reply && <ReplyBoxComponent w="45rem" parent_id={props.id} />}
                 </Flex>
             }
         </>

@@ -14,7 +14,6 @@ export default function ReplyBoxComponent(props: any) {
 
     const [comment, setComment] = useState('');
     const { mutate } = useUser(endpoint + '/api/toka')
-    const [edit, setEdit] = useState(props.edit)
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
@@ -27,14 +26,13 @@ export default function ReplyBoxComponent(props: any) {
             ()=>mutate()
         )
         setComment('')
-        setEdit(false)
         console.log('You clicked submit.');
     }
 
-    if (edit) {
+    
         return (
             <Card
-                w={'45rem'}
+                w={props.w}
                 h={'auto'}
                 radius="lg" >
                 <Flex
@@ -79,7 +77,5 @@ export default function ReplyBoxComponent(props: any) {
                 </Flex>
             </Card>
         );
-    } else {
-        return null
-    }
+    
 }

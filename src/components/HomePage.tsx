@@ -38,9 +38,7 @@ export default function HomePage() {
     window.location.reload();
   };
 
-
   const { comments, mutate, isLoading } = useUser(endpoint + '/api/toka')
-
 
   function Tree(node: any, depth: any) {
     return (
@@ -226,16 +224,7 @@ export default function HomePage() {
         >
           Comments:
         </Text>
-
-        <CommentBoxComponent
-          img={avatar}
-          like={3}
-          time='2023-04-22T06:23:14.333479Z'
-          name='amyrobson'
-          content='Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-                    Ad sapiente tempora quae voluptates impedit id maiores suscipit. 
-                    Consequuntur cupiditate voluptate enim! Quasi, veniam voluptas? Temporibus, perspiciatis. 
-                    Tempora adipisci voluptatem ipsam.' />
+        <ReplyBoxComponent w="50rem"/>
 
         {
           isLoading ?
@@ -247,9 +236,10 @@ export default function HomePage() {
             :
             <>
               {renderForest(comments)}
+              
             </>
         }
-        {user.isLoggedin && <ReplyBoxComponent />}
+        
 
       </Flex >
     </AppShell>

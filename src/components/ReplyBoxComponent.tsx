@@ -8,26 +8,54 @@ import { endpoint } from '../helpers/useUser';
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 
+// import { mutate } from 'swr';
+
 export default function ReplyBoxComponent(props: any) {
 
     const user = useRecoilValue(userState)
 
     const [comment, setComment] = useState('');
-    const { mutate } = useUser(endpoint + '/api/toka')
+    const { mutate } = useUser('/api/toka')
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+
         axios.post(endpoint + '/api/toka/', {
             username: user.name,
             post_content: comment,
             likes: 0,
             parent_post: props.parent_id ? props.parent_id : null,
         })
-        mutate()
+
+        mutate((data: any) => {
+            if (props.parent_id == null){
+                return [{
+                    children: [],
+                    data: {
+                        id: data.length + 1,
+                        username: user.name,
+                        post_content: comment,
+                        user_details: {
+                            user_image: user.user_image,
+                            name: user.name,
+                        },
+                        likes: 0,
+                        parent_post: null,
+                    }
+
+                }, ...data]
+            } 
+        }, true)
 
         setComment('')
         console.log('You clicked submit.');
     }
+
+    const handleReply = (e: any) => {
+        e.preventDefault();
+        console.log('You clicked reply.');
+    }
+
 
 
     return (

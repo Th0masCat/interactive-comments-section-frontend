@@ -19,7 +19,7 @@ import { useRecoilValue } from 'recoil';
 
 export default function CommentBoxComponent(props: any) {
     const user = useRecoilValue(userState)
-    const { mutate } = useUser(endpoint + '/api/toka')
+    const { mutate } = useUser('/api/toka')
 
     const [comment, setComment] = useState('');
     const [edit, setEdit] = useState(false)
@@ -36,9 +36,23 @@ export default function CommentBoxComponent(props: any) {
             post_content: comment
         })
         
-        mutate()
-        
-
+        mutate(
+            (data: any) => {
+                return data.map((item: any) => {
+                    if (item.data.id === props.id) {
+                        return {
+                            ...item,
+                            data: {
+                                ...item.data,
+                                post_content: comment
+                            }
+                        }
+                    }
+                    return item
+                })
+            }, true
+        )
+    
         setEdit(false)
         console.log('Edit')
     }
@@ -49,7 +63,17 @@ export default function CommentBoxComponent(props: any) {
                 id: props.id
             }
         })
-        mutate()
+        mutate(
+            (data: any) => {
+                return data.filter((item: any) => {
+                    item.data.id !== props.id 
+                    item.children.filter((child: any) => {
+                        child.data.id !== props.id
+                    }
+                    )
+                })
+            }, true
+        )
         
         console.log('Delete')
     }
@@ -65,7 +89,13 @@ export default function CommentBoxComponent(props: any) {
 
     return (
         <>
-            <Card ml={props.marginLeft} display={'flex'} w={props.wid || '50rem'} h={'auto'} radius="lg" p="md">
+            <Card 
+            ml={props.marginLeft} 
+            display={'flex'} 
+            w={'50rem'} 
+            h={'auto'} 
+            radius="lg" 
+            p="md">
                 <LikesButton like={props.like} id={props.id} />
                 <Flex
                     align={'flex-end'}

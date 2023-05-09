@@ -38,7 +38,8 @@ export default function HomePage() {
     window.location.reload();
   };
 
-  const { comments, mutate, isLoading } = useUser(endpoint + '/api/toka')
+  const { comments, isLoading } = useUser('/api/toka')
+console.log("comments data", comments);
 
   function Tree(node: any, depth: any) {
     return (
@@ -224,7 +225,7 @@ export default function HomePage() {
         >
           Comments:
         </Text>
-        <ReplyBoxComponent w="50rem"/>
+        <ReplyBoxComponent w="50rem" />
 
         {
           isLoading ?
@@ -235,11 +236,22 @@ export default function HomePage() {
             </>
             :
             <>
-              {renderForest(comments)}
-              
+
+              {
+                comments ?
+                  renderForest(comments)
+                  :
+                  <Text
+                    size="lg"
+                    weight={700}
+                    w={'50rem'}
+                    color='siteNeutral.0'
+                  >No Comments Yet</Text>
+              }
+
             </>
         }
-        
+
 
       </Flex >
     </AppShell>

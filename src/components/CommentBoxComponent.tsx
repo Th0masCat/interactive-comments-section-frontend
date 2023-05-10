@@ -24,6 +24,7 @@ export default function CommentBoxComponent(props: any) {
     const [comment, setComment] = useState('');
     const [edit, setEdit] = useState(false)
     const [reply, setReply] = useState(false)
+    const [del, setDelete] = useState(true)
 
     const handleEditClick = () => {
         setComment(props.content)
@@ -35,27 +36,72 @@ export default function CommentBoxComponent(props: any) {
             id: props.id,
             post_content: comment
         })
-        
+
         mutate(
             (data: any) => {
-                return data.map((item: any) => {
-                    if (item.data.id === props.id) {
-                        return {
-                            ...item,
-                            data: {
-                                ...item.data,
-                                post_content: comment
-                            }
-                        }
-                    }
-                    return item
-                })
+                return updateNodeInData(data, props.id, comment);
             }, true
         )
-    
+
         setEdit(false)
         console.log('Edit')
     }
+
+    const updateNodeInData = (data: any, nodeId: any, comments: any) => {
+        return data.map((node: any) => {
+            if (node.data.id === nodeId) {
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        post_content: comments
+                    }
+                }
+            } else if (node.children) {
+                const updatedChildren = updateNodeInData(node.children, nodeId, comments);
+                return {
+                    ...node,
+                    children: updatedChildren
+                };
+            }
+            return node;
+        });
+    };
+
+    const deleteNodeInData = (data: any, nodeId: any) => {
+        return data.map((node: any) => {
+            if (node.data.id === nodeId) {
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        post_content: '[deleted]'
+                    }
+                }
+            } else if (node.children) {
+                const updatedChildren = deleteNodeInData(node.children, nodeId);
+                return {
+                    ...node,
+                    children: updatedChildren
+                };
+            }
+            return node;
+        });
+    };
+
+    // const removeNodeFromData = (data: any, nodeId: any) => {
+    //     const newData = data.filter((item: any) => item.data.id !== nodeId);
+
+    //     newData.forEach((node: any) => {
+    //         if (node.children) {
+    //             node.children = removeNodeFromData(node.children.filter((item: any) => item.data.id !== nodeId), nodeId);
+    //         }
+    //     });
+
+    //     return newData;
+    // };
+
+
 
     const handleDelete = () => {
         axios.delete(endpoint + '/api/toka/', {
@@ -65,16 +111,16 @@ export default function CommentBoxComponent(props: any) {
         })
         mutate(
             (data: any) => {
-                return data.filter((item: any) => {
-                    if (item.data.id !== props.id) {
-                        return item
-                    }
-                })
+                return deleteNodeInData(data, props.id);
             }, true
         )
-        
+
+        setDelete(false)
         console.log('Delete')
     }
+
+
+
 
     const handleReply = () => {
         if (!user.isLoggedin) {
@@ -87,13 +133,13 @@ export default function CommentBoxComponent(props: any) {
 
     return (
         <>
-            <Card 
-            ml={props.marginLeft} 
-            display={'flex'} 
-            w={'50rem'} 
-            h={'auto'} 
-            radius="lg" 
-            p="md">
+            <Card
+                ml={props.marginLeft}
+                display={'flex'}
+                w={'50rem'}
+                h={'auto'}
+                radius="lg"
+                p="md">
                 <LikesButton like={props.like} id={props.id} />
                 <Flex
                     align={'flex-end'}
@@ -153,13 +199,14 @@ export default function CommentBoxComponent(props: any) {
                             </Text>
                         </Grid.Col>
                         {
-                            user.isLoggedin && props.name == user.name ?
+                            user.isLoggedin &&  del && props.name == user.name ?
                                 <Grid.Col
                                     display={'flex'}
                                     span={5}
                                     sx={{ justifyContent: "flex-end" }}>
                                     <Button.Group>
                                         <Button
+
                                             onClick={handleDelete}
                                             styles={(theme) => ({
                                                 root: {
@@ -167,7 +214,7 @@ export default function CommentBoxComponent(props: any) {
                                                     color: theme.colors.sitePrimary[1],
                                                     '&:hover': {
                                                         backgroundColor: 'transparent',
-                                                    }
+                                                    },
                                                 }
                                             })
 
@@ -176,6 +223,7 @@ export default function CommentBoxComponent(props: any) {
                                         >
                                             Delete
                                         </Button>
+
 
                                         <Button
                                             onClick={handleEditClick}

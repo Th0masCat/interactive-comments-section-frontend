@@ -24,14 +24,33 @@ export default function ReplyBoxComponent(props: any) {
             username: user.name,
             post_content: comment,
             likes: 0,
-            parent_post: props.parent_id ? props.parent_id : null,
-        })
+            parent_post: props.parent_id? props.parent_id : null,
+        });
 
-        mutate((data: any) => {
-            if (props.parent_id == null){
-                return [{
-                    children: [],
-                    data: {
+        mutate(
+            (data: any) => {
+                if (props.parent_id === null) {
+                    console.log("null rans");
+                    return [
+                        {
+                            children: [],
+                            data: {
+                                id: data.length + 1,
+                                username: user.name,
+                                post_content: comment,
+                                user_details: {
+                                    user_image: user.user_image,
+                                    name: user.name,
+                                },
+                                likes: 0,
+                                parent_post: null,  
+                            },
+                            
+                        },
+                        ...data,
+                    ];
+                } else {
+                    return addChildToNode(data, props.parent_id, {
                         id: data.length + 1,
                         username: user.name,
                         post_content: comment,
@@ -40,16 +59,32 @@ export default function ReplyBoxComponent(props: any) {
                             name: user.name,
                         },
                         likes: 0,
-                        parent_post: null,
-                    }
+                        parent_post: props.parent_id,
+                    });
+                }
+            },
+            true
+        );
 
-                }, ...data]
-            } 
-        }, true)
-
-        setComment('')
+        setComment('');
         console.log('You clicked submit.');
-    }
+    };
+
+    const addChildToNode = (data: any, parentId: any, childNode: any) => {
+        return data.map((node: any) => {
+            if (node.data.id === parentId) {
+                const updatedChildren = [{ children: [], data: childNode }, ...node.children];
+                return { ...node, children: updatedChildren };
+            } else if (node.children) {
+                const updatedChildren = addChildToNode(node.children, parentId, childNode);
+                return { ...node, children: updatedChildren };
+            }
+            return node;
+        });
+    };
+
+
+
 
     const handleReply = (e: any) => {
         e.preventDefault();

@@ -39,7 +39,7 @@ export default function HomePage() {
   };
 
   const { comments, isLoading } = useUser('/api/toka')
-console.log("comments data", comments);
+  console.log("comments data", comments);
 
   function Tree(node: any, depth: any) {
     return (
@@ -225,7 +225,7 @@ console.log("comments data", comments);
         >
           Comments:
         </Text>
-        <ReplyBoxComponent w="50rem" />
+        <ReplyBoxComponent w="50rem" parent_id={null}/>
 
         {
           isLoading ?

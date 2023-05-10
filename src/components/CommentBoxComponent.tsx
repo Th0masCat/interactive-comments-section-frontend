@@ -1,4 +1,4 @@
-import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea } from '@mantine/core'
+import { Card, Flex, Text, Image, Button, Grid, Avatar, Textarea, Modal, Container, Box } from '@mantine/core'
 import Moment from 'react-moment'
 import { useState } from 'react';
 import axios from 'axios';
@@ -15,15 +15,18 @@ import useUser from '../helpers/useUser'
 
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
+import { useDisclosure } from '@mantine/hooks';
 
 
 export default function CommentBoxComponent(props: any) {
     const user = useRecoilValue(userState)
     const { mutate } = useUser('/api/toka')
 
+
+    const [opened, { open, close }] = useDisclosure(false);
+
     const [comment, setComment] = useState('');
     const [edit, setEdit] = useState(false)
-    const [reply, setReply] = useState(false)
     const [del, setDelete] = useState(true)
 
     const handleEditClick = () => {
@@ -89,18 +92,9 @@ export default function CommentBoxComponent(props: any) {
         });
     };
 
-    // const removeNodeFromData = (data: any, nodeId: any) => {
-    //     const newData = data.filter((item: any) => item.data.id !== nodeId);
-
-    //     newData.forEach((node: any) => {
-    //         if (node.children) {
-    //             node.children = removeNodeFromData(node.children.filter((item: any) => item.data.id !== nodeId), nodeId);
-    //         }
-    //     });
-
-    //     return newData;
-    // };
-
+    const onCloseModal = () => {
+        close()
+    }
 
 
     const handleDelete = () => {
@@ -119,27 +113,15 @@ export default function CommentBoxComponent(props: any) {
         console.log('Delete')
     }
 
-
-
-
-    const handleReply = () => {
-        if (!user.isLoggedin) {
-            alert('You must be logged in to reply.')
-            return
-        }
-        setReply(!reply)
-        console.log('Reply')
-    }
-
     return (
         <>
             <Card
-                ml={props.marginLeft}
+                ml={props.marginLeft + 'rem'}
                 display={'flex'}
-                w={'50rem'}
                 h={'auto'}
                 radius="lg"
                 p="md">
+
                 <LikesButton like={props.like} id={props.id} />
                 <Flex
                     align={'flex-end'}
@@ -199,7 +181,7 @@ export default function CommentBoxComponent(props: any) {
                             </Text>
                         </Grid.Col>
                         {
-                            user.isLoggedin &&  del && props.name == user.name ?
+                            user.isLoggedin && del && props.name == user.name ?
                                 <Grid.Col
                                     display={'flex'}
                                     span={5}
@@ -249,22 +231,24 @@ export default function CommentBoxComponent(props: any) {
                                     offset={4}
                                     sx={{ justifyContent: "flex-end" }}
                                 >
-                                    <Button
-                                        disabled={props.replyDisabled}
-                                        onClick={handleReply}
-                                        styles={(theme) => ({
-                                            root: {
-                                                backgroundColor: 'transparent',
-                                                color: theme.colors.sitePrimary[0],
-                                                '&:hover': {
+                                    {user.isLoggedin &&
+                                        <Button
+                                            disabled={props.replyDisabled}
+                                            onClick={open}
+                                            styles={(theme) => ({
+                                                root: {
                                                     backgroundColor: 'transparent',
+                                                    color: theme.colors.sitePrimary[0],
+                                                    '&:hover': {
+                                                        backgroundColor: 'transparent',
+                                                    }
                                                 }
-                                            }
-                                        })}
-                                        leftIcon={<Image src={replyIcon} />}
-                                    >
-                                        {reply ? 'Cancel' : 'Reply'}
-                                    </Button>
+                                            })}
+                                            leftIcon={<Image src={replyIcon} />}
+                                        >
+                                            Reply
+                                        </Button>
+                                    }
                                 </Grid.Col>
                         }
 
@@ -312,10 +296,22 @@ export default function CommentBoxComponent(props: any) {
                     }
                 </Flex>
             </Card>
+
             {
-                <Flex align={'flex-end'} direction="column" w={'50rem'}>
-                    {user.isLoggedin && reply && <ReplyBoxComponent w="45rem" parent_id={props.id} />}
-                </Flex>
+                <Modal
+                    radius={"lg"}
+                    opened={opened}
+                    size={"45rem"}
+                    onClose={onCloseModal}
+                    withCloseButton={false}
+                    centered
+                    overlayProps={{
+                        opacity: 0.15,
+                        blur: 0,
+                    }}
+                >
+                    {user.isLoggedin && <ReplyBoxComponent closeModal={onCloseModal} parent_id={props.id} />}
+                </Modal>
             }
         </>
     );

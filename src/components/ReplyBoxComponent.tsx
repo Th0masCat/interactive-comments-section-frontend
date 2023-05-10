@@ -8,8 +8,6 @@ import { endpoint } from '../helpers/useUser';
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
 
-// import { mutate } from 'swr';
-
 export default function ReplyBoxComponent(props: any) {
 
     const user = useRecoilValue(userState)
@@ -66,6 +64,8 @@ export default function ReplyBoxComponent(props: any) {
             true
         );
 
+        props.closeModal();
+        
         setComment('');
         console.log('You clicked submit.');
     };
@@ -82,16 +82,6 @@ export default function ReplyBoxComponent(props: any) {
             return node;
         });
     };
-
-
-
-
-    const handleReply = (e: any) => {
-        e.preventDefault();
-        console.log('You clicked reply.');
-    }
-
-
 
     return (
         <Card

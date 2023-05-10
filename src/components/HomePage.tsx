@@ -19,11 +19,9 @@ import LoginModal from "./LoginModal";
 import useUser from "../helpers/useUser";
 import { endpoint } from "../helpers/useUser";
 
-import avatar from '../../images/avatars/image-amyrobson.png'
-
 import { userState } from '../atoms/userAtom';
 import { useRecoilValue } from 'recoil';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function HomePage() {
   const user = useRecoilValue(userState)
@@ -44,22 +42,32 @@ export default function HomePage() {
   function Tree(node: any, depth: any) {
     return (
       <>
-        <CommentBoxComponent
-          key={node.data.id * 2}
-          marginLeft={`${2 * depth}rem`}
-          loggedInUser={user.isLoggedin}
-          id={node.data.id}
-          img={endpoint + node.data.user_details.user_image}
-          like={node.data.likes}
-          name={node.data.user_details.name}
-          time={node.data.time_when_posted}
-          content={node.data.post_content}
-        />
-        {
-          node.children.map((child: any) => (
-            Tree(child, depth + 1)
-          ))
-        }
+        <Box style={{
+          borderLeft: `2px solid ${depth !== 0 ? "lightgrey" : "transparent"}`,
+          borderBottom: `2px solid ${depth !== 0 ? "lightgrey" : "transparent"}`,
+          paddingBottom: depth !== 0 ? "0.1rem" : "0",
+          borderBottomLeftRadius: "15px",
+          borderBottomRightRadius: "15px",
+          paddingTop: depth !== 0 ? "1rem" : "0",
+          marginLeft: 10 * depth
+        }}>
+          <CommentBoxComponent
+            renderLine={depth !== 0}
+            key={node.data.id * 2}
+            loggedInUser={user.isLoggedin}
+            id={node.data.id}
+            img={endpoint + node.data.user_details.user_image}
+            like={node.data.likes}
+            name={node.data.user_details.name}
+            time={node.data.time_when_posted}
+            content={node.data.post_content}
+          />
+          {
+            node.children.map((child: any) => (
+              Tree(child, depth + 1)
+            ))
+          }
+        </Box>
       </>
     );
   }
@@ -67,7 +75,6 @@ export default function HomePage() {
   function renderForest(forest: any) {
     return forest.map((tree: any) => Tree(tree, 0));
   }
-
 
   return (
     <AppShell
@@ -170,90 +177,94 @@ export default function HomePage() {
     >
       <Flex
         direction="column"
-        align="center"
-        gap={'md'}>
+        w={'100%'}
+        align={'center'}
+        justify={'center'}
+      >
         <Flex
-          direction={"column"}
-          w={'50rem'}>
-          <Text
-            size="xl"
-            weight={700}
-            w={'50rem'}
-            color='siteNeutral.1'
+          w={'50%'}
+          direction="column"
+          gap={"lg"}
+        >
+          <Flex
+            direction={"column"}
           >
-            Hotdogs are real???
-          </Text>
+            <Text
+              size="xl"
+              weight={700}
+              color='siteNeutral.1'
+            >
+              Hotdogs are real???
+            </Text>
+            <Text
+              size="xs"
+              weight={400}
+              color='siteNeutral.1'
+              mb={'lg'}
+            >
+              Posted by rex2187
+            </Text>
+
+            <Image
+              src="https://i.giphy.com/media/5E7vDOIamcWlzg97TG/giphy.webp"
+              radius={'lg'}
+              height={500}
+              mb={"xl"}
+            />
+            <Skeleton
+              height={8}
+              animate={false}
+              radius="xl" />
+            <Skeleton
+              height={8}
+              animate={false}
+              mt={6}
+              radius="xl"
+            />
+            <Skeleton
+              height={8}
+              animate={false}
+              mt={6}
+              width="70%"
+              radius="xl"
+            />
+          </Flex>
           <Text
-            size="xs"
-            weight={400}
-            w={'50rem'}
-            color='siteNeutral.1'
+            size="lg"
+            weight={700}
+            color='siteNeutral.0'
+            mt={'xl'}
             mb={'lg'}
           >
-            Posted by rex2187
+            Comments:
           </Text>
+          <ReplyBoxComponent parent_id={null} />
 
-          <Image
-            src="https://i.giphy.com/media/5E7vDOIamcWlzg97TG/giphy.webp"
-            radius={'lg'}
-            height={500}
-            mb={"xl"}
-          />
-          <Skeleton
-            height={8}
-            animate={false}
-            radius="xl" />
-          <Skeleton
-            height={8}
-            animate={false}
-            mt={6}
-            radius="xl"
-          />
-          <Skeleton
-            height={8}
-            animate={false}
-            mt={6}
-            width="70%"
-            radius="xl"
-          />
+          {
+            isLoading ?
+              <>
+                <SkeletonComponent />
+                <SkeletonComponent />
+                <SkeletonComponent />
+              </>
+              :
+              <>
+
+                {
+                  comments ?
+                    renderForest(comments)
+                    :
+                    <Text
+                      size="lg"
+                      weight={700}
+                      color='siteNeutral.0'
+                    >No Comments Yet</Text>
+                }
+
+              </>
+          }
+        </Flex >
         </Flex>
-        <Text
-          size="lg"
-          weight={700}
-          w={'50rem'}
-          color='siteNeutral.0'
-        >
-          Comments:
-        </Text>
-        <ReplyBoxComponent w="50rem" parent_id={null}/>
-
-        {
-          isLoading ?
-            <>
-              <SkeletonComponent />
-              <SkeletonComponent />
-              <SkeletonComponent />
-            </>
-            :
-            <>
-
-              {
-                comments ?
-                  renderForest(comments)
-                  :
-                  <Text
-                    size="lg"
-                    weight={700}
-                    w={'50rem'}
-                    color='siteNeutral.0'
-                  >No Comments Yet</Text>
-              }
-
-            </>
-        }
-
-
-      </Flex >
     </AppShell>
   );
 }

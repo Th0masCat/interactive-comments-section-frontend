@@ -8,7 +8,8 @@ import {
   Avatar,
   Button,
   Popover,
-  Box
+  Box,
+  Grid
 } from "@mantine/core";
 
 import CommentBoxComponent from "./CommentBoxComponent";
@@ -43,12 +44,12 @@ export default function HomePage() {
     return (
       <>
         <Box style={{
-          borderLeft: `2px solid ${depth !== 0 ? "lightgrey" : "transparent"}`,
-          borderBottom: `2px solid ${depth !== 0 ? "lightgrey" : "transparent"}`,
-          paddingBottom: depth !== 0 ? "0.1rem" : "0",
+          borderLeft: `1px dotted ${depth !== 0 ? "lightgrey" : "transparent"}`,
+          borderBottom: `1px dotted ${depth !== 0 ? "lightgrey" : "transparent"}`,
+          paddingLeft: depth !== 0 ? "0.3rem" : "0",
           borderBottomLeftRadius: "15px",
           borderBottomRightRadius: "15px",
-          paddingTop: depth !== 0 ? "1rem" : "0",
+          paddingTop: "2rem",
           marginLeft: 10 * depth
         }}>
           <CommentBoxComponent
@@ -175,16 +176,21 @@ export default function HomePage() {
         </Header>
       }
     >
-      <Flex
-        direction="column"
+      <Grid
         w={'100%'}
-        align={'center'}
-        justify={'center'}
+        styles={(theme) => ({
+          root: {
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[8]
+                : theme.colors.gray[0],
+          },
+        })}
       >
-        <Flex
-          w={'50%'}
-          direction="column"
-          gap={"lg"}
+
+        <Grid.Col
+          offset={2}
+          span={8}
         >
           <Flex
             direction={"column"}
@@ -263,8 +269,8 @@ export default function HomePage() {
 
               </>
           }
-        </Flex >
-        </Flex>
+        </Grid.Col >
+      </Grid>
     </AppShell>
   );
 }

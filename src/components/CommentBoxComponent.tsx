@@ -118,6 +118,8 @@ export default function CommentBoxComponent(props: any) {
             <Card
                 ml={props.marginLeft + 'rem'}
                 display={'flex'}
+                miw={'40rem'}
+                w={'100%'}
                 h={'auto'}
                 radius="lg"
                 p="md">
@@ -131,13 +133,11 @@ export default function CommentBoxComponent(props: any) {
                     w={"100%"}
                 >
                     <Grid
-                        grow
                         align={"center"}
                         w={"100%"}
                     >
                         <Grid.Col
-                            display={'flex'}
-                            span={'auto'}
+                            span={'content'}
                             sx={{ justifyContent: 'center' }}
                         >
                             <Avatar
@@ -147,7 +147,8 @@ export default function CommentBoxComponent(props: any) {
                             />
                         </Grid.Col>
 
-                        <Grid.Col span={'content'}>
+                        <Grid.Col
+                            span={'content'}>
                             <Text
                                 align='left'
                                 weight={'bold'}
@@ -173,7 +174,7 @@ export default function CommentBoxComponent(props: any) {
                             </Text>
                         </Grid.Col>
 
-                        <Grid.Col span={3}>
+                        <Grid.Col span={'auto'}>
                             <Text
                                 align='left'
                                 color='siteNeutral.1'>
@@ -183,12 +184,10 @@ export default function CommentBoxComponent(props: any) {
                         {
                             user.isLoggedin && del && props.name == user.name ?
                                 <Grid.Col
-                                    display={'flex'}
-                                    span={5}
-                                    sx={{ justifyContent: "flex-end" }}>
+                                    span={'content'}
+                                    >
                                     <Button.Group>
                                         <Button
-
                                             onClick={handleDelete}
                                             styles={(theme) => ({
                                                 root: {
@@ -226,14 +225,11 @@ export default function CommentBoxComponent(props: any) {
                                 </Grid.Col>
                                 :
                                 <Grid.Col
-                                    display={'flex'}
-                                    span={2}
-                                    offset={4}
-                                    sx={{ justifyContent: "flex-end" }}
+                                    span={'content'}
+                                    
                                 >
-                                    {user.isLoggedin &&
+                                    {user.isLoggedin && del &&
                                         <Button
-                                            disabled={props.replyDisabled}
                                             onClick={open}
                                             styles={(theme) => ({
                                                 root: {

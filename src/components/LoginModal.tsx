@@ -22,6 +22,7 @@ export default function LoginModal(props: any) {
         axios.post(endpoint + '/api/user/', {
             name: usernameValue,
             password: passwordValue,
+            email: '',
         }).then((res) => {
             console.log(res.data)
             setUser(() => ({
@@ -34,6 +35,9 @@ export default function LoginModal(props: any) {
             console.log(user)
         }).catch((error) => {
             console.error(error);
+            if (error.response.status === 400) {
+                alert("Wrong username or password")
+            }
         });
 
         console.log('Sign-In')

@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import axios from 'axios'
 
-export const endpoint = 'http://th0mascat.pythonanywhere.com'
+export const endpoint = 'https://th0mascat.pythonanywhere.com'
 
 export default function useUser(id: any) {
 

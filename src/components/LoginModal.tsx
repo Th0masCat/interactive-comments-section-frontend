@@ -12,6 +12,12 @@ export default function LoginModal(props: any) {
     const [passwordValue, setPasswordValue] = useInputState('');
 
     const [opened, { open, close }] = useDisclosure(true);
+    const [err, setError] = useState({
+        name: '',
+        email: '',
+        password: '',
+        user_image: '',
+    });
 
     const [register, setRegister] = useState(false);
 
@@ -34,9 +40,14 @@ export default function LoginModal(props: any) {
             close()
             console.log(user)
         }).catch((error) => {
-            console.error(error);
+            console.error(error.response);
             if (error.response.status === 400) {
-                alert("Wrong username or password")
+                setError(
+                    {
+                        ...err,
+                        name: "Invalid username or password",
+                    }
+                )
             }
         });
 
@@ -44,6 +55,12 @@ export default function LoginModal(props: any) {
     }
 
     const handleRegisterClick = () => {
+        setError({
+            name: '',
+            email: '',
+            password: '',
+            user_image: '',
+        })
         setRegister(!register)
     }
 
@@ -61,15 +78,24 @@ export default function LoginModal(props: any) {
 
         };
 
-        axios.post(endpoint + '/api/user/', formData, config).then((res) => {
+        axios.post(endpoint + '/api/register/', formData, config).then((res) => {
+            setRegister(!register)
+            setPasswordValue('')
+            setError({
+                name: '',
+                email: '',
+                password: '',
+                user_image: '',
+            })
             console.log(res.data)
-            setUser(res.data)
         }).catch((error) => {
-            console.error(error);
+            console.error(error.response);
+            if (error.response.status === 400) {
+                setError(error.response.data)
+            }
         });
         console.log('Registered')
-        setPasswordValue('')
-        setRegister(!register)
+        console.log(err)
     }
 
     return (
@@ -88,6 +114,7 @@ export default function LoginModal(props: any) {
                     p={'lg'}
                 >
                     <TextInput
+                        error={err.name != '' ? err.name : false}
                         data-autofocus
                         value={usernameValue}
                         onChange={setUsernameValue}
@@ -100,6 +127,7 @@ export default function LoginModal(props: any) {
                     {
                         register ?
                             <TextInput
+                                error={err.email != '' ? err.email : false}
                                 value={emailValue}
                                 onChange={setEmailValue}
                                 w={'100%'}
@@ -109,6 +137,7 @@ export default function LoginModal(props: any) {
                             : null
                     }
                     <PasswordInput
+                        error={err.password != '' && register ? err.password : false}
                         value={passwordValue}
                         onChange={setPasswordValue}
                         w={'100%'}
@@ -119,6 +148,7 @@ export default function LoginModal(props: any) {
                     {
                         register ?
                             <FileInput
+                                error={err.user_image != '' ? err.user_image : false}
                                 value={imageValue}
                                 onChange={setImageValue}
                                 radius={'lg'}
@@ -127,14 +157,15 @@ export default function LoginModal(props: any) {
                             : null
                     }
                     <Button.Group
+                        
                         mt={'lg'}
                         orientation='horizontal'
                         sx={
                             {
-                                justifyContent: 'flex-end'
-
+                                justifyContent: register?'flex':'flex-end',
+                                flexDirection: register?'row-reverse':'row'
+                            }
                         }
-                    }
                     >
                         <Button
                             onClick={register ? handleRegister : handleRegisterClick}
@@ -153,9 +184,9 @@ export default function LoginModal(props: any) {
                             Register
                         </Button>
                         {
-                            register ? null :
+                            
                                 <Button
-                                    onClick={handleSignIn}
+                                    onClick={register?handleRegisterClick:handleSignIn}
                                     styles={(theme) => ({
                                         root: {
                                             backgroundColor: 'transparent',

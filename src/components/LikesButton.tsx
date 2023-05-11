@@ -11,7 +11,8 @@ import useUser from '../helpers/useUser'
 
 export default function LikesButton(props: any) {
     const { mutate } = useUser('/api/toka')
-    const [likes, setLikes] = useState(props.like);
+    const [likesUpdate, setLikesUpdate] = useState(props.like);
+    const [likesDisabled, setLikesDisabled] = useState(false);
     const user = useRecoilValue(userState)
 
     const updateNodeInData = (data: any, nodeId: any, likes: any) => {
@@ -41,16 +42,16 @@ export default function LikesButton(props: any) {
         }
         axios.put(endpoint + '/api/toka/', {
             id: props.id,
-            likes: likes
+            likes: likesUpdate
         }).catch((error) => {
             console.log(error)
         })
         mutate(
             (data: any) => {
-                return updateNodeInData(data, props.id, likes);
+                return updateNodeInData(data, props.id, likesUpdate);
             }, true
         )
-    }, [likes])
+    }, [likesUpdate])
 
     const subtractLike = () => {
         if (!user.isLoggedin) {
@@ -58,17 +59,19 @@ export default function LikesButton(props: any) {
             return
         }
 
-        if (likes > 0) {
-            setLikes(likes - 1);
+        if (likesUpdate > 0) {
+            setLikesUpdate(likesUpdate - 1);
         }
+        setLikesDisabled(!likesDisabled);
     };
 
     const addLike = () => {
-        if (!user.isLoggedin) {
+        if (!user.isLoggedin && !likesDisabled) {
             alert('You must be logged in to like.')
             return
         }
-        setLikes(likes + 1);
+        setLikesUpdate(likesUpdate + 1);
+        setLikesDisabled(!likesDisabled);
     };
 
     return (
@@ -84,6 +87,7 @@ export default function LikesButton(props: any) {
             }
         >
             <Button
+                disabled={likesDisabled}
                 w={"100%"}
                 color={"siteNeutral.2"}
                 onClick={addLike}
@@ -103,10 +107,11 @@ export default function LikesButton(props: any) {
                 w={"100%"}
                 bg={"siteNeutral.2"}
             >
-                {likes}
+                {likesUpdate}
             </Text>
 
             <Button
+                disabled={!likesDisabled}
                 w={'100%'}
                 color={"siteNeutral.2"}
                 onClick={subtractLike}

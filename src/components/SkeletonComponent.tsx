@@ -4,10 +4,12 @@ export default function SkeletonComponent() {
     return (
     <Card
         display={'flex'}
-        w={'50rem'}
+        w={'100%'}
         h={'auto'}
         radius="lg"
         p="md"
+        mt={'md'}
+        mb="md"
     >
         <Grid
             p={'md'}

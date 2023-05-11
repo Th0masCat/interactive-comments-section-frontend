@@ -29,6 +29,8 @@ export default function HomePage() {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
 
+  const { comments, isLoading } = useUser('/api/toka')
+
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
   }
@@ -37,12 +39,12 @@ export default function HomePage() {
     window.location.reload();
   };
 
-  const { comments, isLoading } = useUser('/api/toka')
-
   function Tree(node: any, depth: any) {
     return (
       <>
-        <Box style={{
+        <Box
+          key={node.data.id}
+        sx={{
           borderLeft: `1px dotted ${depth !== 0 ? "lightgrey" : "transparent"}`,
           borderBottom: `1px dotted ${depth !== 0 ? "lightgrey" : "transparent"}`,
           paddingLeft: depth !== 0 ? "0.3rem" : "0",
@@ -53,7 +55,7 @@ export default function HomePage() {
         }}>
           <CommentBoxComponent
             renderLine={depth !== 0}
-            key={node.data.id * 2}
+            key={node.data.id}
             loggedInUser={user.isLoggedin}
             id={node.data.id}
             img={endpoint + node.data.user_details.user_image}
@@ -78,7 +80,7 @@ export default function HomePage() {
 
   return (
     <AppShell
-      styles={(theme) => ({
+      sx={(theme) => ({
         main: {
           backgroundColor:
             theme.colorScheme === "dark"
@@ -132,7 +134,7 @@ export default function HomePage() {
 
                     <Popover.Dropdown>
                       <Button
-                        styles={(theme) => ({
+                        sx={(theme) => ({
                           root: {
                             backgroundColor: 'transparent',
                             color: theme.colors.sitePrimary[1],
@@ -177,7 +179,7 @@ export default function HomePage() {
     >
       <Grid
         w={'100%'}
-        styles={(theme) => ({
+        sx={(theme) => ({
           root: {
             backgroundColor:
               theme.colorScheme === "dark"
@@ -263,7 +265,9 @@ export default function HomePage() {
                       size="lg"
                       weight={700}
                       color='siteNeutral.0'
-                    >No Comments Yet</Text>
+                    >
+                      No Comments Yet
+                    </Text>
                 }
 
               </>

@@ -47,7 +47,6 @@ export default function CommentBoxComponent(props: any) {
         )
 
         setEdit(false)
-        console.log('Edit')
     }
 
     const updateNodeInData = (data: any, nodeId: any, comments: any) => {
@@ -110,7 +109,6 @@ export default function CommentBoxComponent(props: any) {
         )
 
         setDelete(false)
-        console.log('Delete')
     }
 
     return (

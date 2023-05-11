@@ -7,21 +7,50 @@ import { useRecoilValue } from 'recoil';
 
 import axios from "axios";
 
+import useUser from '../helpers/useUser'
+
 export default function LikesButton(props: any) {
+    const { mutate } = useUser('/api/toka')
     const [likes, setLikes] = useState(props.like);
     const user = useRecoilValue(userState)
 
-    // useEffect(() => {
-    //     if (props.id === undefined) {
-    //         return
-    //     }
-    //     axios.put(endpoint + '/api/toka/', {
-    //         id: props.id,
-    //         likes: likes
-    //     }).catch((error) => {
-    //         console.log(error)
-    //     })
-    // }, [likes])
+    const updateNodeInData = (data: any, nodeId: any, likes: any) => {
+        return data.map((node: any) => {
+            if (node.data.id === nodeId) {
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        likes: likes
+                    }
+                }
+            } else if (node.children) {
+                const updatedChildren = updateNodeInData(node.children, nodeId, likes);
+                return {
+                    ...node,
+                    children: updatedChildren
+                };
+            }
+            return node;
+        });
+    };
+
+    useEffect(() => {
+        if (props.id === undefined) {
+            return
+        }
+        axios.put(endpoint + '/api/toka/', {
+            id: props.id,
+            likes: likes
+        }).catch((error) => {
+            console.log(error)
+        })
+        mutate(
+            (data: any) => {
+                return updateNodeInData(data, props.id, likes);
+            }, true
+        )
+    }, [likes])
 
     const subtractLike = () => {
         if (!user.isLoggedin) {

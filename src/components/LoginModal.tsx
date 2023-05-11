@@ -30,7 +30,6 @@ export default function LoginModal(props: any) {
             password: passwordValue,
             email: '',
         }).then((res) => {
-            console.log(res.data)
             setUser(() => ({
                 name: res.data.name,
                 email: res.data.email,
@@ -38,9 +37,7 @@ export default function LoginModal(props: any) {
                 isLoggedin: true,
             }))
             close()
-            console.log(user)
         }).catch((error) => {
-            console.error(error.response);
             if (error.response.status === 400) {
                 setError(
                     {
@@ -51,7 +48,6 @@ export default function LoginModal(props: any) {
             }
         });
 
-        console.log('Sign-In')
     }
 
     const handleRegisterClick = () => {
@@ -87,15 +83,11 @@ export default function LoginModal(props: any) {
                 password: '',
                 user_image: '',
             })
-            console.log(res.data)
         }).catch((error) => {
-            console.error(error.response);
             if (error.response.status === 400) {
                 setError(error.response.data)
             }
         });
-        console.log('Registered')
-        console.log(err)
     }
 
     return (

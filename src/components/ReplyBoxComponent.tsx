@@ -17,13 +17,13 @@ export default function ReplyBoxComponent(props: any) {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        if(!user.isLoggedin) return alert('You must be logged in to comment');
+        if (!user.isLoggedin) return alert('You must be logged in to comment');
 
         axios.post(endpoint + '/api/toka/', {
             username: user.name,
             post_content: comment,
             likes: 0,
-            parent_post: props.parent_id? props.parent_id : null,
+            parent_post: props.parent_id ? props.parent_id : null,
         });
 
         mutate(
@@ -41,9 +41,9 @@ export default function ReplyBoxComponent(props: any) {
                                     name: user.name,
                                 },
                                 likes: 0,
-                                parent_post: null,  
+                                parent_post: null,
                             },
-                            
+
                         },
                         ...data,
                     ];
@@ -63,9 +63,10 @@ export default function ReplyBoxComponent(props: any) {
             },
             true
         );
-        setComment('');
-
-        props.closeModal();
+        setComment('')
+        if (props.closeModal !== null) {
+            props.closeModal()
+        }
     };
 
     const addChildToNode = (data: any, parentId: any, childNode: any) => {

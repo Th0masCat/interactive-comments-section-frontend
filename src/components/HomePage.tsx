@@ -243,7 +243,7 @@ export default function HomePage() {
           >
             Comments:
           </Text>
-          <ReplyBoxComponent parent_id={null} />
+          <ReplyBoxComponent closeModal={null} parent_id={null} />
 
           {
             isLoading ?

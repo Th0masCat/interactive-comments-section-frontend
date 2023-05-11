@@ -36,32 +36,25 @@ export default function LikesButton(props: any) {
         });
     };
 
-    useEffect(() => {
-        if (props.id === undefined) {
-            return
-        }
-        axios.put(endpoint + '/api/toka/', {
-            id: props.id,
-            likes: likesUpdate
-        }).catch((error) => {
-            console.log(error)
-        })
-        mutate(
-            (data: any) => {
-                return updateNodeInData(data, props.id, likesUpdate);
-            }, true
-        )
-    }, [likesUpdate])
-
     const subtractLike = () => {
         if (!user.isLoggedin) {
             alert('You must be logged in to like.')
             return
         }
+        axios.put(endpoint + '/api/toka/', {
+            id: props.id,
+            likes: likesUpdate - 1,
+        }).catch((error) => {
+            console.log(error)
+        })
 
-        if (likesUpdate > 0) {
-            setLikesUpdate(likesUpdate - 1);
-        }
+        mutate(
+            (data: any) => {
+                return updateNodeInData(data, props.id, likesUpdate - 1)
+            },
+            false
+        )
+        setLikesUpdate(likesUpdate - 1)
         setLikesDisabled(!likesDisabled);
     };
 
@@ -70,7 +63,21 @@ export default function LikesButton(props: any) {
             alert('You must be logged in to like.')
             return
         }
-        setLikesUpdate(likesUpdate + 1);
+        axios.put(endpoint + '/api/toka/', {
+            id: props.id,
+            likes: likesUpdate + 1
+        }).catch((error) => {
+            console.log(error)
+        })
+
+        mutate(
+            (data: any) => {
+                return updateNodeInData(data, props.id, likesUpdate + 1)
+            },  
+            false
+        )
+
+        setLikesUpdate(likesUpdate + 1)
         setLikesDisabled(!likesDisabled);
     };
 
